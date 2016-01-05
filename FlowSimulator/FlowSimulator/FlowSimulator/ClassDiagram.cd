@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="FlowSimulator.Action">
+    <Position X="7.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAEAAAAABAAAAAAAA=</HashCode>
+      <FileName>Action.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ActionType" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="FlowSimulator.Canvas">
+    <Position X="9.5" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAoKBQAQAAAgABAAAAggAEYElAAUEABAQ=</HashCode>
+      <FileName>Canvas.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Action" />
+      <Property Name="Filehelper" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Components" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="FlowSimulator.Component">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAEgAAAAIIAAEAAAAAEAAAAAAAIgAAA=</HashCode>
+      <FileName>Component.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Pipeline">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>Pipeline.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.FileHelper">
+    <Position X="9.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAQAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>FileHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.FlowNetworkSimulator" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>EDCAYhUQCCAAARICsCCASARiAQAAhQAYECAAAYDAIGU=</HashCode>
+      <FileName>FlowNetworkSimulator.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="canvas" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="FlowSimulator.Merger">
+    <Position X="5.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAIABBAAAgABAAIAIAgEAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Merger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Program" Collapsed="true">
+    <Position X="17.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Pump">
+    <Position X="2.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAAIAABAAAAAAAAAAIAgEAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Pump.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Sink">
+    <Position X="4" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAAIAABAAAAAAAAAAIAgEAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Sink.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Splitter">
+    <Position X="7.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAIAABAAQgAAAAAAJQgEAAAAAAAAAQAAAAgAAA=</HashCode>
+      <FileName>Splitter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Properties.Resources" Collapsed="true">
+    <Position X="17.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAgEIACAogAAACEBk4AAARAAIAAAQIEAAgAJAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FlowSimulator.Properties.Settings" Collapsed="true">
+    <Position X="17.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="FlowSimulator.ActionType">
+    <Position X="4.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAIAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Action.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
