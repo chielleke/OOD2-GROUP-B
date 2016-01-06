@@ -39,7 +39,6 @@ namespace FlowSimulator
             }
             set
             {
-                
             }
         }
         public Size Size { get; set; }
@@ -70,17 +69,45 @@ namespace FlowSimulator
         /// <summary>
         /// To store an action eg. save, undo etc.
         /// </summary>
-
+        public Action Action
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
 
         /// <summary>
-        /// This list contains the undo-redo actions
+        /// This stack contains the undo actions
         /// </summary>
-        public List<Action> UndoRedoList = new List<Action>();
+        public Stack<Action> UndoStack
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
+
         /// <summary>
-        /// this int is used for knowing where canvas is at while using the Undo-Redo List
+        /// This stack contains the redo actions
         /// </summary>
-        private int UndoRedoIndex = 0;
-        
+
+        public Stack<Action> RedoStack
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+            }
+        }
 
         /// <summary>
         /// Responsible for saving a canvas and loading existing canvas
@@ -127,7 +154,6 @@ namespace FlowSimulator
                 {
                     Pen p = new Pen(System.Drawing.Color.Gray, 2);
                     e.Graphics.DrawRectangle(p, c.Position.X, c.Position.Y, 40, 40);
-                   
                 }
             }
 
@@ -157,7 +183,7 @@ namespace FlowSimulator
         /// To check if it is overlapping
         /// </summary>
         /// <param name="selectedComponent"></param>
-        
+
         public bool IsOverlapping(Rectangle newPlace)
         {
 
@@ -176,6 +202,10 @@ namespace FlowSimulator
             return false;
         }
 
+        public Point  getMidPoint(Pipeline p)
+        {
+            return new Point((p.inputPoint.X + p.outputPoint.X)/2, (p.inputPoint.Y + p.outputPoint.Y)/2);
+        }
 
 
         /// <summary>
@@ -201,10 +231,22 @@ namespace FlowSimulator
         /// To calculate the maximum flow through the network
         /// </summary>
         /// <returns></returns>
-        public int CalculateMaxFlow()
+        /// 
+        private Pipeline p;
+      
+        public double CalculateMaxFlow(Component c1, Component c2)
         {
-            return 0;
+           
+            double flow = c1.CurrentFlow;
+            c2.CurrentFlow = c1.CurrentFlow;
+            p = new Pipeline(c1, c2, flow);
+            return p.getCapacity(c1, c2);
         }
+        /// <summary>
+        /// To calculate the maximum flow through the network
+        /// </summary>
+        /// <returns></returns>
+        
 
         /// <summary>
         /// To draw a created component
@@ -213,40 +255,18 @@ namespace FlowSimulator
         /// <param name="e"></param>
         public void DrawComponent(Component c, PaintEventArgs e)
         {
-
-
             Image pump = Properties.Resources.pump;
             e.Graphics.DrawImage(pump, c.Position);
 
-
-
-
-
         }
+     
 
         /// <summary>
         /// To undo the last action eg. adding a component
         /// </summary>
         public void UndoLastAction()
         {
-            Action CurrentAction = UndoRedoList[UndoRedoIndex];
-            switch (CurrentAction.ActionType)
-            {
-                case ActionType.Create:
-                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Delete, CurrentAction.Component);
-                    Components.Remove(CurrentAction.Component);
-                    break;
-                case ActionType.Move:
-                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Move, CurrentAction.Component);
-                    CurrentAction.Component.Position = CurrentAction.Position;
-                    break;
-                case ActionType.Delete:
-                    Components.Add(CurrentAction.Component);
-                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Create, CurrentAction.Component);
-                    break;
-
-            }
-            UndoRedoIndex--;
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -254,38 +274,9 @@ namespace FlowSimulator
         /// </summary>
         public void RedoLastAction()
         {
-            Action RedoAction = UndoRedoList[UndoRedoIndex+1];
-            switch (RedoAction.ActionType)
-            {
-                case ActionType.Create:
-                    UndoRedoList[UndoRedoIndex+1] = new Action(ActionType.Delete, RedoAction.Component);
-                    Components.Remove(RedoAction.Component);
-                    break;
-                case ActionType.Move:
-                    UndoRedoList[UndoRedoIndex+1] = new Action(ActionType.Move, RedoAction.Component);
-                    RedoAction.Component.Position = RedoAction.Position;
-                    break;
-                case ActionType.Delete:
-                    Components.Add(RedoAction.Component);
-                    UndoRedoList[UndoRedoIndex+1] = new Action(ActionType.Create, RedoAction.Component);
-                    break;
-
-            }
-            UndoRedoIndex++;
+            throw new System.NotImplementedException();
         }
-        /// <summary>
-        /// this is used for creating an undo. NOTE: use this method before you give the component it's new position or before you delete the component!
-        /// </summary> 
-        /// <param name="ActType">type "Create", "Delete" or "Move" here without quotations</param>
-        /// <param name="comp">reference to the component</param>
-        public void CreateUndo(ActionType ActType, Component comp)
-        {
-            UndoRedoList.Add(new Action(ActType, comp));
-            UndoRedoIndex++;
-            UndoRedoList.RemoveAt(UndoRedoIndex + 1);
 
-        }
-       
         /// <summary>
         /// To redraw an action that was deleted or moved(part of the Undo/redo methods)
         /// </summary>
@@ -340,6 +331,7 @@ namespace FlowSimulator
            }
            return Math.Sqrt(dx * dx + dy * dy);
        }
+
        public void DeletePipeline(Point p)
        {
            Pipeline tempPipe = null;
@@ -442,9 +434,11 @@ namespace FlowSimulator
         public bool DrawPipeline(Component c1, Component c2)
         {
             int selectedIndex = 0;
+
             Component temp1 = c1;
             Component temp2 = c2;
-           
+           if(c1 != c2)
+           { 
             if (c1 is Pump)
             {
                 if (((Pump)c1).PipelineConnected == false)
@@ -476,6 +470,7 @@ namespace FlowSimulator
                     {
                         if (((Splitter)c2).Input == false)
                         {
+                            ((Splitter)c2).InPut = c1;
                             foreach (Component c in Components)
                             {
                                 if (c == c1)
@@ -506,6 +501,7 @@ namespace FlowSimulator
                                 if (c == c1)
                                 {
                                     ((Pump)c).PipelineConnected = true;
+                                    
                                 }
                                 else if (c == c2)
                                 {
@@ -513,11 +509,14 @@ namespace FlowSimulator
                                     {
                                         selectedIndex = 1;
                                         ((Merger)c).InputUp = true;
+                                        ((Merger)c).InPutUp = c1;
+                                     
                                     }
                                     else if (((Merger)c).InputDown == false)
                                     {
                                         selectedIndex = 2;
                                         ((Merger)c).InputDown = true;
+                                        ((Merger) c).InPutDown = c1;
                                     }
 
                                 
@@ -565,6 +564,7 @@ namespace FlowSimulator
                             {
                                 if (((Splitter)c).OutputUp == false)
                                 {
+                                    
                                     selectedIndex = 1;
                                     ((Splitter)c).OutputUp = true;
                                 }
@@ -631,11 +631,13 @@ namespace FlowSimulator
                                 {
                                     selectedIndex2 = 1;
                                     ((Merger)c).InputUp = true;
+                                    ((Merger) c).InPutUp = c1;
                                 }
                                 else if (((Merger)c).InputDown == false)
                                 {
                                     selectedIndex2 = 2;
                                     ((Merger)c).InputDown = true;
+                                    ((Merger)c).InPutDown = c1;
                                 }
 
                             }
@@ -650,6 +652,8 @@ namespace FlowSimulator
                 {
                     if (((Splitter)c2).Input == false)
                     {
+                       
+                        ((Splitter) c2).InPut = c1;
                         foreach (Component c in Components)
                         {
                             if (c == c1)
@@ -686,8 +690,9 @@ namespace FlowSimulator
             }
             else if (c1 is Merger)
             {
-                if (((Merger)c1).Output == false)
+                if (((Merger) c1).Output == false)
                 {
+
                     if (c2 is Pump)
                     {
                         temp1 = c2;
@@ -697,91 +702,96 @@ namespace FlowSimulator
                     }
                     else if (c2 is Sink)
                     {
-                        if(((Sink)c2).PipelineConnected == false)
+                        if (((Sink) c2).PipelineConnected == false)
                         {
                             foreach (Component c in Components)
                             {
                                 if (c == c1)
                                 {
-                                    if (((Merger)c).Output == false)
+                                    if (((Merger) c).Output == false)
 
-                                        ((Merger)c).Output = true;
+                                        ((Merger) c).Output = true;
                                 }
                                 else if (c == c2)
                                 {
-                                    if (((Sink)c).PipelineConnected == false)
+                                    if (((Sink) c).PipelineConnected == false)
                                     {
                                         selectedIndex = 0;
-                                        ((Sink)c).PipelineConnected = true;
+                                        ((Sink) c).PipelineConnected = true;
                                     }
                                 }
-                                Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
-                                selectedIndex = 0;
-                                return true;
+                               
                             }
+                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            selectedIndex = 0;
+                            return true;
                         }
                     }
                     else if (c2 is Splitter)
                     {
-                        if(((Splitter)c2).Input == false)
+                        if (((Splitter) c2).Input == false)
+                        {
+                            ((Splitter)c2).InPut = c1;
+                            foreach (Component c in Components)
+                            {
+                                if (c == c1)
+                                {
+                                    if (((Merger) c).Output == false)
+
+                                        ((Merger) c).Output = true;
+
+                                }
+                                else if (c == c2)
+                                {
+                                    if (((Splitter) c).Input == false)
+                                    {
+                                        selectedIndex = 0;
+                                        ((Splitter) c).Input = true;
+                                    }
+                                }
+                                
+                            }
+                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            selectedIndex = 0;
+                            return true;
+                        }
+                    }
+                    else if (c2 is Merger)
+                    {
+                        if (((Merger) c2).InputDown == false || ((Merger) c2).InputUp == false)
                         {
                             foreach (Component c in Components)
                             {
                                 if (c == c1)
                                 {
-                                    if (((Merger)c).Output == false)
+                                    if (((Merger) c).Output == false)
 
-                                        ((Merger)c).Output = true;
+                                        ((Merger) c).Output = true;
 
                                 }
                                 else if (c == c2)
                                 {
-                                    if (((Splitter)c).Input == false)
+                                    if (((Merger) c).InputUp == false)
                                     {
-                                        selectedIndex = 0;
-                                        ((Splitter)c).Input = true;
+                                        selectedIndex = 1;
+                                        ((Merger) c).InputUp = true;
+                                    }
+                                    else if (((Merger) c).InputDown == false)
+                                    {
+                                        selectedIndex = 2;
+                                        ((Merger) c).InputDown = true;
                                     }
                                 }
-                                Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
-                                selectedIndex = 0;
-                                return true;
-                            }
-                        }
-                    }
-                    else if (c2 is Merger)
-                    {
-                        if(((Merger)c2).InputDown == false || ((Merger)c2).InputUp == false){
-                        foreach (Component c in Components)
-                        {
-                            if (c == c1)
-                            {
-                                if (((Merger)c).Output == false)
-
-                                    ((Merger)c).Output = true;
 
                             }
-                            else if (c == c2)
-                            {
-                                if (((Merger)c).InputUp == false)
-                                {
-                                    selectedIndex = 1;
-                                    ((Merger)c).InputUp = true;
-                                }
-                                else if (((Merger)c).InputDown == false)
-                                {
-                                    selectedIndex = 2;
-                                    ((Merger)c).InputDown = true;
-                                }
-                            }
-                            
+                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            selectedIndex = 0;
+                            return true;
                         }
-                        Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
-                        selectedIndex = 0;
-                        return true;
+
                     }
-                    
                 }
-                }
+            }
             }
             else
             {

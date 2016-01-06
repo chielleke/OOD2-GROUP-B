@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Reflection.Emit;
 
 namespace FlowSimulator
 {
@@ -10,15 +11,22 @@ namespace FlowSimulator
     /// An abstract class which the various types of components inherit from
     /// </summary>
     
-    public abstract class Component :ICloneable
+    public abstract class Component
     {
+        public Component InPut { get; set; }
+        public Component InPutUp { get; set; }
+        public Component InPutDown { get; set; }
+        public Component OutPutUp { get; set; }
+        public Component OutPutDown { get; set; }
 
         /// <summary>
         /// The current position of the component on the canvas
         /// </summary>
+        /// 
+       
         private Point position;
         private Rectangle selectionArea;
-        
+      
         public Point Position
         {
             get { return position; }
@@ -30,30 +38,12 @@ namespace FlowSimulator
         /// <summary>
         /// The maximum flow through the component
         /// </summary>
-        public int MaxFlow
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public int Capacity { get; set; }
 
         /// <summary>
         /// The current flow through the component
         /// </summary>
-        public int CurrentFlow
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public int CurrentFlow { get; set; }
 
         /// <summary>
         /// Determines if the component is currently selected
@@ -86,6 +76,9 @@ namespace FlowSimulator
             Size s = new Size(40, 40);
            selectionArea = new Rectangle(this.Position, new Size(40, 40));
             
+   
+            
+
         }
     public abstract Image ComponentImage(bool isOccupied);
     public abstract Image ComponentIconImage(bool isOccupied);
@@ -97,10 +90,5 @@ namespace FlowSimulator
             return true;
         
     }
-        //Iclonable
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
-    }
+}
 }
