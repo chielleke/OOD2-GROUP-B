@@ -11,7 +11,7 @@ namespace FlowSimulator
     /// An abstract class which the various types of components inherit from
     /// </summary>
     
-    public abstract class Component
+    public abstract class Component : ICloneable
     {
         public Component InPut { get; set; }
         public Component InPutUp { get; set; }
@@ -90,5 +90,10 @@ namespace FlowSimulator
             return true;
         
     }
-}
+        //Iclonable
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+    }
 }

@@ -81,33 +81,14 @@ namespace FlowSimulator
         }
 
         /// <summary>
-        /// This stack contains the undo actions
+        /// This list contains the undo-redo actions
         /// </summary>
-        public Stack<Action> UndoStack
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
+        public List<Action> UndoRedoList = new List<Action>();
         /// <summary>
-        /// This stack contains the redo actions
+        /// this int is used for knowing where canvas is at while using the Undo-Redo List
         /// </summary>
-
-        public Stack<Action> RedoStack
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public int UndoRedoIndex = -1;
+        
 
         /// <summary>
         /// Responsible for saving a canvas and loading existing canvas
@@ -259,14 +240,34 @@ namespace FlowSimulator
             e.Graphics.DrawImage(pump, c.Position);
 
         }
-     
 
+
+        /// <summary>
+        /// To undo the last action eg. adding a component
+        /// </summary>
         /// <summary>
         /// To undo the last action eg. adding a component
         /// </summary>
         public void UndoLastAction()
         {
-            throw new System.NotImplementedException();
+            Action CurrentAction = UndoRedoList[UndoRedoIndex];
+            switch (CurrentAction.ActionType)
+            {
+                case ActionType.Create:
+                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Delete, CurrentAction.Component);
+                    Components.Remove(CurrentAction.Component);
+                    break;
+                case ActionType.Move:
+                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Move, CurrentAction.Component);
+                    CurrentAction.Component.Position = CurrentAction.Position;
+                    break;
+                case ActionType.Delete:
+                    Components.Add(CurrentAction.Component);
+                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Create, CurrentAction.Component);
+                    break;
+
+            }
+            UndoRedoIndex--;
         }
 
         /// <summary>
@@ -274,8 +275,39 @@ namespace FlowSimulator
         /// </summary>
         public void RedoLastAction()
         {
-            throw new System.NotImplementedException();
+            Action RedoAction = UndoRedoList[UndoRedoIndex + 1];
+            switch (RedoAction.ActionType)
+            {
+                case ActionType.Create:
+                    UndoRedoList[UndoRedoIndex + 1] = new Action(ActionType.Delete, RedoAction.Component);
+                    Components.Remove(RedoAction.Component);
+                    break;
+                case ActionType.Move:
+                    UndoRedoList[UndoRedoIndex + 1] = new Action(ActionType.Move, RedoAction.Component);
+                    RedoAction.Component.Position = RedoAction.Position;
+                    break;
+                case ActionType.Delete:
+                    Components.Add(RedoAction.Component);
+                    UndoRedoList[UndoRedoIndex + 1] = new Action(ActionType.Create, RedoAction.Component);
+                    break;
+
+            }
+            UndoRedoIndex++;
         }
+        /// <summary>
+        /// this is used for creating an undo. NOTE: use this method before you give the component it's new position or before you delete the component!
+        /// </summary> 
+        /// <param name="ActType">type "Create", "Delete" or "Move" here without quotations</param>
+        /// <param name="comp">reference to the component</param>
+        public void CreateUndo(ActionType ActType, Component comp)
+        {
+            UndoRedoList.Add(new Action(ActType, comp));
+            UndoRedoIndex++;
+            if (UndoRedoIndex +1 <UndoRedoList.Count)
+                { UndoRedoList.RemoveAt(UndoRedoIndex + 1); }
+
+        }
+
 
         /// <summary>
         /// To redraw an action that was deleted or moved(part of the Undo/redo methods)

@@ -163,8 +163,10 @@ namespace FlowSimulator
                     selectedComponent.UpdateSelectionArea();
                   
                     canvas.CreateComponent(selectedComponent);
+                    canvas.CreateUndo(ActionType.Create, selectedComponent);
                     selectedComponent = null;
                     compIsMoving = false;
+                    
                     this.Refresh();
                     this.Cursor = Cursors.Arrow;
                 }
@@ -173,8 +175,10 @@ namespace FlowSimulator
                 
                 if (selectedComponent != null && canvas.IsOverlapping(selectedComponent.SelectionArea) || !area.IntersectsWith(new Rectangle(mousepoint, new Size(40, 40))))
                 {
+                    canvas.CreateUndo(ActionType.Move, selectedComponent);
                     if (compIsMoving)
                     {
+                       
                         selectedComponent.Position = oldCoordinates;
                         selectedComponent.UpdateSelectionArea();
                        // if(selectedComponent)
@@ -351,6 +355,29 @@ namespace FlowSimulator
         private void btnMerger_Click(object sender, EventArgs e)
         {
             selectedComponent = new Merger(new Point(0, 0));
+        }
+
+        private void UndoButton_Click(object sender, EventArgs e)
+        {
+            canvas.UndoLastAction();
+            if (canvas.UndoRedoList.Count==0)
+            {
+                this.Enabled = false;
+            }
+            RedoButton.Enabled = true;
+            this.Refresh();
+
+        }
+
+        private void RedoButton_Click(object sender, EventArgs e)
+        {
+            canvas.RedoLastAction();
+            if (canvas.UndoRedoIndex == canvas.UndoRedoList.Count)
+            {
+                this.Enabled = false;
+            }
+            this.Refresh();
+            
         }
 
         private void btnPipe_Click(object sender, EventArgs e)
