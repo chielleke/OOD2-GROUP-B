@@ -9,50 +9,17 @@ namespace FlowSimulator
 
     public class Pipeline
     {
-        public double Capacity { get; set; }
-        public double Flow { get; set; }
+       
         /// <summary>
         /// The input component connected to the pipeline
         /// </summary>
-        public Component Input { get; set; }
-
-        public Pipeline(Component input, Component output, double flow)
+        public Component Input
         {
-            this.Input = input;
-            this.Output = output;
-            this.Flow = Convert.ToDouble(input.CurrentFlow);
-
+            get;
+            set;
         }
 
-        // returns the remaining capacity on a pipe
-        public double getCapacity(Component from, Component to)
-        {//forward flow
-            if (Input.Equals(from) && Output.Equals(to))
-                return Capacity - Flow;
-            //backwards flow
-            if (Input.Equals(to) && Output.Equals(from))
-                return Flow;
-
-            throw new ArgumentException("Both from " + from.GetType() + " and " + from.GetType() +
-                                        "should be a part of this pipeline");
-        }
-
-       
-        public int AdjustCapacity(Component from, Component to, int flow)
-        {
-            if (flow > getCapacity(from, to))
-                throw new ArgumentException("The flow: "+flow+"exceeds the limit");
-           // forward flow
-            if (Input.Equals(from) && Output.Equals(to))
-                this.Flow += flow;
-            // backwards flow
-            if (Input.Equals(to) && Output.Equals(from))
-                this.Flow -= flow;
-                
-            throw new ArgumentException("Both from: "+from.GetType()+" and "+to.GetType()+" should be a part of this pipeline");
-        }
-
-    /// <summary>
+        /// <summary>
         /// The output component connected to the pipeline
         /// </summary>
         public Component Output
@@ -79,8 +46,6 @@ namespace FlowSimulator
             this.Input = c1;
             this.Output = c2;
             _selectedOutput = selectedOutput;
-            this.Capacity = 0;
-            this.Flow = Convert.ToDouble(c1.CurrentFlow);
             //this.AssignInputPoint();
            // this.AssignOutputPoint();
         }
@@ -90,8 +55,6 @@ namespace FlowSimulator
             this.Output = c2;
             _selectedOutput = selectedOutput;
             _selectedOutput2 = selectedOutput2;
-            this.Capacity = 0;
-            this.Flow = Convert.ToDouble(c1.CurrentFlow);
           //  this.AssignInputPoint();
            // this.AssignOutputPoint();
         }
@@ -164,7 +127,64 @@ namespace FlowSimulator
             } 
         }
 
+        public void AssignInputPoint()
+        {
+            if (Input is Pump)
+            {
+                //if(_selectedOutput == 0)
+                    _inputPoint = new Point(Input.Position.X, Input.Position.Y + 20);
 
+            }
+            else if (Input is Splitter)
+            {
+                if (_selectedOutput == 1)
+                {
+                    _inputPoint = new Point(Input.Position.X, Input.Position.Y + 10);
+                }
+                else if (_selectedOutput == 2)
+                    _inputPoint = new  Point(Output.Position.X, Output.Position.Y + 30);
+            }
+            else if (Input is Merger )
+            {
+
+                if (_selectedOutput == 0)
+                    _inputPoint = new Point(Output.Position.X, Output.Position.Y + 20);
+
+            }
+           
+        }
+        public void AssignOutputPoint()
+        { 
+            if(Output is Sink)
+                {
+                    if (_selectedOutput == 0)
+                    _outputPoint =  new Point(Output.Position.X, Output.Position.Y + 20);
+
+                }
+                else if(Output is Splitter)
+                {
+                    if (_selectedOutput == 0)
+                        _outputPoint = new Point(Output.Position.X, Output.Position.Y + 20);
+
+                }
+                else if(Output is Merger)
+                {
+                    if (Input is Splitter)
+                    {
+                        if (_selectedOutput2 == 1)
+                            _outputPoint = new Point(Output.Position.X, Output.Position.Y + 10);
+                        if (_selectedOutput2 == 2)
+                            _outputPoint = new Point(Output.Position.X, Output.Position.Y + 30);
+                    }
+                    else
+                    {
+                        if (_selectedOutput == 1)
+                            _outputPoint = new Point(Output.Position.X, Output.Position.Y + 10);
+                        if (_selectedOutput == 2)
+                            _outputPoint = new Point(Output.Position.X, Output.Position.Y + 30);
+                    }
+                }
+        }
 
 
 

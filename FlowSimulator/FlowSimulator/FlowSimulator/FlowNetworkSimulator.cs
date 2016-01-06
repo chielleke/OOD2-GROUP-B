@@ -13,7 +13,7 @@ namespace FlowSimulator
 
     public partial class FlowNetworkSimulator : Form
     {
-
+        
         Canvas canvas; // drawing area
         Point mousepoint; //point where mouse was clicked
         int selectedIndex;
@@ -49,11 +49,6 @@ namespace FlowSimulator
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pictureBox4_Click(object sender, EventArgs e)
         {
 
         }
@@ -146,31 +141,17 @@ namespace FlowSimulator
             IWin32Window win = this;
             if (e.Button == MouseButtons.Left)
             {
-
                 isSelected = false;
-
-                if ((tempComponent = canvas.SelectComponent(mousepoint)) != null)
-                {
-                    isSelected = true;
-                    this.Refresh();
-
-
-                }
                 if (selectedComponent != null && !canvas.IsOverlapping(selectedComponent.SelectionArea) && area.IntersectsWith(new Rectangle(mousepoint, new Size(40, 40))))
                 {
-                   
                     selectedComponent.Position = new Point(mousepoint.X, mousepoint.Y);
                     selectedComponent.UpdateSelectionArea();
-                  
                     canvas.CreateComponent(selectedComponent);
                     selectedComponent = null;
                     compIsMoving = false;
                     this.Refresh();
                     this.Cursor = Cursors.Arrow;
                 }
-               
-                
-                
                 if (selectedComponent != null && canvas.IsOverlapping(selectedComponent.SelectionArea) || !area.IntersectsWith(new Rectangle(mousepoint, new Size(40, 40))))
                 {
                     if (compIsMoving)
@@ -182,7 +163,6 @@ namespace FlowSimulator
                         compIsMoving = false;
                         this.Refresh();
                     }
-                    
                     selectedComponent = null;
                     //this.Cursor = Cursors.Arrow;
                     tooltip.Show("You cannot place a component here", win, mousepoint);
@@ -201,29 +181,22 @@ namespace FlowSimulator
                     {
                         second = new Point(mousepoint.X, mousepoint.Y);
                         if (canvas.DrawPipeline(canvas.SelectComponent(first), canvas.SelectComponent(second)))
-                        {   
+                        {
                             connectedComp1 = false;
                             addNewPipeline = false;
-
-                            label7.Text = canvas.CalculateMaxFlow(canvas.SelectComponent(first),
-                                canvas.SelectComponent(second)).ToString(); 
-
-
-                           
+                            canvas.CalculateMaxFlow();
                             this.Refresh();
                             this.Cursor = Cursors.Arrow;
                         }
                         else
                         {
-                            tooltip.Show("Unable to establish a connection", win, Cursor.Position);
+                            tooltip.Show("Unble to establish a connection", win, Cursor.Position);
                             connectedComp1 = false;
                             this.Cursor = Cursors.Arrow;
                             this.Refresh();
                         }
                     }
                 }
-
-               
             }
             else if (e.Button == MouseButtons.Right)
             {
@@ -240,7 +213,6 @@ namespace FlowSimulator
                 }
                 else if ((selectedPipeline = canvas.SelectPipeline(mousepoint)) != null)
                 {
-                    
                     cmsEditPipeline.Show(Cursor.Position);
                     wireIsSelected = true;
                 }
@@ -251,21 +223,22 @@ namespace FlowSimulator
 
                 this.Refresh();
             }
-           
-            if (isSelected)
-            {
-                Component temp = canvas.SelectComponent(mousepoint);
-                flowLabel.Location = new Point(temp.Position.X + 6, temp.Position.Y - 15);
-                flowLabel.Text = temp.Capacity+ "("+ temp.CurrentFlow + ")";
-            }
-            if ((selectedPipeline = canvas.SelectPipeline(mousepoint)) != null)
-            {
-                flowLabel.Location = canvas.getMidPoint(selectedPipeline);
-                flowLabel.Text = selectedPipeline.Capacity + "(" + selectedPipeline.Flow+")";
-            }
+
         }
 
-        private bool propertiesSet = true;
+        private void UndoButton_Click(object sender, EventArgs e)
+        {
+            canvas.UndoLastAction();
+            this.Refresh();
+
+        }
+
+        private void RedoButton_Click(object sender, EventArgs e)
+        {
+            canvas.RedoLastAction();
+            this.Refresh();
+        }
+
         private void FlowNetworkSimulator_MouseMove(object sender, MouseEventArgs e)
         {
             try
@@ -273,10 +246,11 @@ namespace FlowSimulator
                 if (selectedComponent != null)
                 {
                     Point mouseClick = this.PointToClient(Cursor.Position);
+                    canvas.CreateUndo(ActionType.Move, selectedComponent);
                     selectedComponent.Position = new Point(mouseClick.X, mouseClick.Y);
                     selectedComponent.UpdateSelectionArea();
                     Rectangle tempRec = new Rectangle(mouseClick, new Size(40, 40));
-                    if (canvas.IsOverlapping(tempRec) || !area.IntersectsWith(tempRec) && !propertiesSet)
+                    if (canvas.IsOverlapping(tempRec) || !area.IntersectsWith(tempRec))
                     {
                         this.Cursor = new Cursor(((Bitmap)selectedComponent.ComponentIconImage(false)).GetHicon());
                     }
@@ -288,9 +262,6 @@ namespace FlowSimulator
                     if (compIsMoving)
                     {
                         selectedComponent.Position = new Point(mouseClick.X, mouseClick.Y);
-                        Component temp = selectedComponent;
-                        flowLabel.Location = new Point(temp.Position.X + 6, temp.Position.Y - 15);
-                        flowLabel.Text = temp.Capacity + "(" + temp.CurrentFlow + ")";
                     }
                     this.Refresh();
                 }
@@ -382,85 +353,5 @@ namespace FlowSimulator
             isSelected = false;
             this.Refresh();
         }
-        Pipeline p;
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-            propertiesSet = false;
-            if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null)
-            {
-                if (textBox2.Text != "")
-                {
-                    selectedComponent.Capacity = Convert.ToInt32(textBox2.Text);
-                    flowLabel.Text = selectedComponent.Capacity+"("+selectedComponent.CurrentFlow+")";
-                }
-            }
-           
-            if ((p = canvas.SelectPipeline(mousepoint)) != null)
-            {
-                if (textBox2.Text != "")
-                {
-                    p.Capacity = Convert.ToInt32(textBox1.Text);
-                    flowLabel.Text = p.Capacity+"("+p.Flow+")";
-                }
-            }
-
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            Component temp;
-            propertiesSet = false;
-            if ((temp = canvas.SelectComponent(mousepoint)) != null)
-            {
-                if (textBox1.Text != "")
-                {
-                    temp.CurrentFlow = Convert.ToInt32(textBox1.Text);
-                    flowLabel.Text = temp.Capacity + "(" + temp.CurrentFlow + ")";
-
-                }
-            }
-            Pipeline p;
-            if ((p = canvas.SelectPipeline(mousepoint)) != null)
-            {
-                if (textBox1.Text != "")
-                {
-                    p.Flow = Convert.ToDouble(textBox1.Text);
-                    flowLabel.Text = p.Capacity + "(" + p.Flow + ")";
-                }
-            }
-        }
-
-        private int maxFlow, currentFlow;
-       
-
-        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //panel5.Enabled = true;
-            //maxFlow = 0;
-            //currentFlow = 0;
-            //if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null)
-
-               
-            //        currentFlow = Convert.ToInt32(textBox1.Text);
-            //        maxFlow = Convert.ToInt32(textBox2.Text);
-            //        if (currentFlow <= maxFlow)
-            //        {
-
-            //            selectedComponent.CurrentFlow = currentFlow;
-            //            selectedComponent.Capacity = maxFlow;
-
-            //        }
-            //        else
-            //        {
-            //            IWin32Window win = this;
-            //            tooltip.Show("current flow cannot be higher than the maximum flow.", win, Cursor.Position);
-            //        }
-
-                }
-              
-        
-
-
-        }
     }
+}
