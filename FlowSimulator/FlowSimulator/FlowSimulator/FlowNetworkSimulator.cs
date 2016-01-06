@@ -164,6 +164,7 @@ namespace FlowSimulator
                   
                     canvas.CreateComponent(selectedComponent);
                     canvas.CreateUndo(ActionType.Create, selectedComponent);
+                    UndoButton.Enabled = true;
                     selectedComponent = null;
                     compIsMoving = false;
                     
@@ -176,6 +177,7 @@ namespace FlowSimulator
                 if (selectedComponent != null && canvas.IsOverlapping(selectedComponent.SelectionArea) || !area.IntersectsWith(new Rectangle(mousepoint, new Size(40, 40))))
                 {
                     canvas.CreateUndo(ActionType.Move, selectedComponent);
+                    UndoButton.Enabled = true;
                     if (compIsMoving)
                     {
                        
@@ -360,9 +362,9 @@ namespace FlowSimulator
         private void UndoButton_Click(object sender, EventArgs e)
         {
             canvas.UndoLastAction();
-            if (canvas.UndoRedoList.Count==0)
+            if (canvas.UndoRedoIndex==-1)
             {
-                this.Enabled = false;
+                UndoButton.Enabled = false;
             }
             RedoButton.Enabled = true;
             this.Refresh();
@@ -372,10 +374,11 @@ namespace FlowSimulator
         private void RedoButton_Click(object sender, EventArgs e)
         {
             canvas.RedoLastAction();
-            if (canvas.UndoRedoIndex == canvas.UndoRedoList.Count)
+            if (canvas.UndoRedoIndex +1 == canvas.UndoRedoList.Count)
             {
-                this.Enabled = false;
+                RedoButton.Enabled = false;
             }
+            UndoButton.Enabled = true;
             this.Refresh();
             
         }
@@ -404,6 +407,7 @@ namespace FlowSimulator
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            
             canvas.DeleteComponent(mousepoint);
            
             isSelected = false;
