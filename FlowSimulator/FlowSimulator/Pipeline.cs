@@ -20,15 +20,8 @@ namespace FlowSimulator
         {
             this.Input = input;
             this.Output = output;
-            this.Capacity = 10;
             this.Flow = Convert.ToDouble(input.CurrentFlow);
 
-        }
-
-        public void UpdateProperties(int flow)
-        {
-            if (this.Flow != flow)
-                Flow = flow;
         }
 
         // returns the remaining capacity on a pipe
@@ -45,7 +38,6 @@ namespace FlowSimulator
         }
 
        
-        // when adjusting the flow, this checks if the flow exceeds the capacity 
         public int AdjustCapacity(Component from, Component to, int flow)
         {
             if (flow > getCapacity(from, to))
@@ -82,15 +74,13 @@ namespace FlowSimulator
         private Point _outputPoint;
         public int _selectedOutput { get; set; }
         public int _selectedOutput2 { get; set; }
-        public int oldFlow;
-
         public Pipeline(Component c1, Component c2, int selectedOutput)
         {
             this.Input = c1;
             this.Output = c2;
             _selectedOutput = selectedOutput;
-            this.Capacity = 10;
-           this.Flow = Convert.ToDouble(c1.CurrentFlow);
+            this.Capacity = 0;
+            this.Flow = Convert.ToDouble(c1.CurrentFlow);
             //this.AssignInputPoint();
            // this.AssignOutputPoint();
         }
@@ -100,9 +90,8 @@ namespace FlowSimulator
             this.Output = c2;
             _selectedOutput = selectedOutput;
             _selectedOutput2 = selectedOutput2;
-            this.Capacity = 10;
+            this.Capacity = 0;
             this.Flow = Convert.ToDouble(c1.CurrentFlow);
-            
           //  this.AssignInputPoint();
            // this.AssignOutputPoint();
         }
@@ -139,8 +128,6 @@ namespace FlowSimulator
                 return new Point(0, 0);
             } 
         }
-
-       
         public Point outputPoint
         {
             get

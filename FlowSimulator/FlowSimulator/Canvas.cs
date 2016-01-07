@@ -81,33 +81,14 @@ namespace FlowSimulator
         }
 
         /// <summary>
-        /// This stack contains the undo actions
+        /// This list contains the undo-redo actions
         /// </summary>
-        public Stack<Action> UndoStack
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
-
+        public List<Action> UndoRedoList = new List<Action>();
         /// <summary>
-        /// This stack contains the redo actions
+        /// this int is used for knowing where canvas is at while using the Undo-Redo List
         /// </summary>
-
-        public Stack<Action> RedoStack
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public int UndoRedoIndex = -1;
+        
 
         /// <summary>
         /// Responsible for saving a canvas and loading existing canvas
@@ -240,7 +221,6 @@ namespace FlowSimulator
             double flow = c1.CurrentFlow;
             c2.CurrentFlow = c1.CurrentFlow;
             p = new Pipeline(c1, c2, flow);
-            
             return p.getCapacity(c1, c2);
         }
         /// <summary>
@@ -260,14 +240,34 @@ namespace FlowSimulator
             e.Graphics.DrawImage(pump, c.Position);
 
         }
-     
 
+
+        /// <summary>
+        /// To undo the last action eg. adding a component
+        /// </summary>
         /// <summary>
         /// To undo the last action eg. adding a component
         /// </summary>
         public void UndoLastAction()
         {
-            throw new System.NotImplementedException();
+            Action CurrentAction = UndoRedoList[UndoRedoIndex];
+            switch (CurrentAction.ActionType)
+            {
+                case ActionType.Create:
+                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Delete, CurrentAction.Component);
+                    Components.Remove(CurrentAction.Component);
+                    break;
+                case ActionType.Move:
+                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Move, CurrentAction.Component);
+                    CurrentAction.Component.Position = CurrentAction.Position;
+                    break;
+                case ActionType.Delete:
+                    Components.Add(CurrentAction.Component);
+                    UndoRedoList[UndoRedoIndex] = new Action(ActionType.Create, CurrentAction.Component);
+                    break;
+
+            }
+            UndoRedoIndex--;
         }
 
         /// <summary>
@@ -275,8 +275,39 @@ namespace FlowSimulator
         /// </summary>
         public void RedoLastAction()
         {
-            throw new System.NotImplementedException();
+            Action RedoAction = UndoRedoList[UndoRedoIndex + 1];
+            switch (RedoAction.ActionType)
+            {
+                case ActionType.Create:
+                    UndoRedoList[UndoRedoIndex + 1] = new Action(ActionType.Delete, RedoAction.Component);
+                    Components.Remove(RedoAction.Component);
+                    break;
+                case ActionType.Move:
+                    UndoRedoList[UndoRedoIndex + 1] = new Action(ActionType.Move, RedoAction.Component);
+                    RedoAction.Component.Position = RedoAction.Position;
+                    break;
+                case ActionType.Delete:
+                    Components.Add(RedoAction.Component);
+                    UndoRedoList[UndoRedoIndex + 1] = new Action(ActionType.Create, RedoAction.Component);
+                    break;
+
+            }
+            UndoRedoIndex++;
         }
+        /// <summary>
+        /// this is used for creating an undo. NOTE: use this method before you give the component it's new position or before you delete the component!
+        /// </summary> 
+        /// <param name="ActType">type "Create", "Delete" or "Move" here without quotations</param>
+        /// <param name="comp">reference to the component</param>
+        public void CreateUndo(ActionType ActType, Component comp)
+        {
+            UndoRedoList.Add(new Action(ActType, comp));
+            UndoRedoIndex++;
+            if (UndoRedoIndex +1 <UndoRedoList.Count)
+                { UndoRedoList.RemoveAt(UndoRedoIndex + 1); }
+
+        }
+
 
         /// <summary>
         /// To redraw an action that was deleted or moved(part of the Undo/redo methods)
@@ -421,7 +452,6 @@ namespace FlowSimulator
                if (Pipelines[i].Output == SelectComponent(mouseClicked))  
                {
                    DeletePipeline(Pipelines[i].outputPoint);
-                  
                    i--;
                }
                else if (Pipelines[i].Input == SelectComponent(mouseClicked)) 
@@ -433,7 +463,6 @@ namespace FlowSimulator
            }
            Components.Remove(SelectComponent(mouseClicked)); 
        }
-        
         public bool DrawPipeline(Component c1, Component c2)
         {
             int selectedIndex = 0;
@@ -457,13 +486,10 @@ namespace FlowSimulator
                                 if (c == c1)
                                 {
                                     ((Pump)c).PipelineConnected = true;
-                                    ((Pump) c).OutPut = c2;
                                 }
                                 else if (c == c2)
                                 {
                                     ((Sink)c).PipelineConnected = true;
-                                    ((Sink)c).InPut = c1;
-
                                 }
 
                             }
@@ -476,8 +502,7 @@ namespace FlowSimulator
                     {
                         if (((Splitter)c2).Input == false)
                         {
-                          
-
+                            ((Splitter)c2).InPut = c1;
                             foreach (Component c in Components)
                             {
                                 if (c == c1)
@@ -488,8 +513,7 @@ namespace FlowSimulator
                                 {
 
                                     ((Splitter)c).Input = true;
-                                    ((Splitter)c2).InPut = c1;
-                                    
+
                                 }
 
                             }
@@ -518,16 +542,13 @@ namespace FlowSimulator
                                         selectedIndex = 1;
                                         ((Merger)c).InputUp = true;
                                         ((Merger)c).InPutUp = c1;
-
-                                       ((Merger) c2).CurrentFlow += c1.CurrentFlow;
-
+                                     
                                     }
                                     else if (((Merger)c).InputDown == false)
                                     {
                                         selectedIndex = 2;
                                         ((Merger)c).InputDown = true;
                                         ((Merger) c).InPutDown = c1;
-                                       ((Merger)c2).CurrentFlow += c1.CurrentFlow;
                                     }
 
                                 
@@ -567,7 +588,6 @@ namespace FlowSimulator
                 else if (c2 is Sink)
                 {
                     bool alreadyConnected = false;
-
                     if (((Sink)c2).PipelineConnected == false)
                     {
                         foreach (Component c in Components)
@@ -579,24 +599,12 @@ namespace FlowSimulator
                                     
                                     selectedIndex = 1;
                                     ((Splitter)c).OutputUp = true;
-                                    c2.OutPutUp = c1;
-
-                                    double flow = c1.CurrentFlow * ((Splitter)c).PercentageUp;
-                                    c1.CurrentFlow = (int) Math.Round(flow);
-                                    c2.CurrentFlow += c1.CurrentFlow;
-
                                 }
 
                                 else if (((Splitter)c).OutputDown == false)
                                 {
                                     selectedIndex = 2;
                                     ((Splitter)c).OutputDown = true;
-                                    c2.OutPutDown = c1;
-                                    double flow = c1.CurrentFlow * ((Splitter)c).PercentageDown;
-                                    c1.CurrentFlow = (int)Math.Round(flow);
-                                    c2.CurrentFlow += c1.CurrentFlow;
-
-
 
                                 }
                             }
@@ -606,8 +614,6 @@ namespace FlowSimulator
                                 {
 
                                     ((Sink)c).PipelineConnected = true;
-                                    ((Sink) c).InPut = c1;
-                                    
                                 }
                                 else
                                 {
@@ -643,22 +649,12 @@ namespace FlowSimulator
                                 {
                                     selectedIndex = 1;
                                     ((Splitter)c).OutputUp = true;
-                                        c2.InPutUp = c1;
-                                        double flow = c1.CurrentFlow * ((Splitter)c).PercentageUp;
-                                        c1.CurrentFlow = (int)Math.Round(flow);
-                                    c2.CurrentFlow += c1.CurrentFlow;
-
                                 }
 
                                 else if (((Splitter)c).OutputDown == false)
                                 {
                                     selectedIndex = 2;
                                     ((Splitter)c).OutputDown = true;
-                                    c2.InPutDown = c1;
-                                    double flow = c1.CurrentFlow * ((Splitter)c).PercentageDown;
-                                    c1.CurrentFlow = (int)Math.Round(flow);
-                                    c2.CurrentFlow += c1.CurrentFlow;
-
                                 }
                             }
                             else if (c == c2)
@@ -668,14 +664,12 @@ namespace FlowSimulator
                                     selectedIndex2 = 1;
                                     ((Merger)c).InputUp = true;
                                     ((Merger) c).InPutUp = c1;
-                                   ((Merger) c).CurrentFlow += c1.CurrentFlow;
                                 }
                                 else if (((Merger)c).InputDown == false)
                                 {
                                     selectedIndex2 = 2;
                                     ((Merger)c).InputDown = true;
                                     ((Merger)c).InPutDown = c1;
-                                    ((Merger) c).CurrentFlow += ((Merger) c).InPutDown.CurrentFlow;
                                 }
 
                             }
@@ -691,39 +685,29 @@ namespace FlowSimulator
                     if (((Splitter)c2).Input == false)
                     {
                        
-                        
+                        ((Splitter) c2).InPut = c1;
                         foreach (Component c in Components)
                         {
                             if (c == c1)
                             {
-                                if (((Splitter) c).OutputUp == false)
+                                if (((Splitter)c).OutputUp == false)
                                 {
                                     selectedIndex = 1;
-                                    ((Splitter) c).OutputUp = true;
-                                    ((Splitter) c).OutPutDown = c1;
-                                    double flow = c1.CurrentFlow * ((Splitter)c).PercentageUp;
-                                    c1.CurrentFlow = (int)Math.Round(flow);
-                                    c2.CurrentFlow += c1.CurrentFlow;
+                                    ((Splitter)c).OutputUp = true;
                                 }
-                                else if (((Splitter) c).OutputDown == false)
+                                else if (((Splitter)c).OutputDown == false)
                                 {
                                     selectedIndex = 2;
 
-                                    ((Splitter) c).OutputDown = true;
-                                    ((Splitter) c).OutPutDown = c1;
-                                    double flow = c1.CurrentFlow * ((Splitter)c).PercentageDown;
-                                    c1.CurrentFlow = (int)Math.Round(flow);
-                                    c2.CurrentFlow += c1.CurrentFlow;
-
+                                    ((Splitter)c).OutputDown = true;
                                 }
-
+                                
 
                             }
                             else if (c == c2)
                             {
                                 if (((Splitter)c).Input == false)
                                     ((Splitter)c).Input = true;
-                                ((Splitter)c2).InPut = c1;
 
                             }
 
@@ -766,8 +750,6 @@ namespace FlowSimulator
                                     {
                                         selectedIndex = 0;
                                         ((Sink) c).PipelineConnected = true;
-                                        ((Sink) c).InPut = c1;
-                                        ((Sink) c).CurrentFlow += c1.CurrentFlow;
                                     }
                                 }
                                
@@ -781,7 +763,7 @@ namespace FlowSimulator
                     {
                         if (((Splitter) c2).Input == false)
                         {
-                         
+                            ((Splitter)c2).InPut = c1;
                             foreach (Component c in Components)
                             {
                                 if (c == c1)
@@ -797,9 +779,6 @@ namespace FlowSimulator
                                     {
                                         selectedIndex = 0;
                                         ((Splitter) c).Input = true;
-                                        ((Splitter) c).InPut = c1;
-                                        ((Splitter) c).CurrentFlow += c1.CurrentFlow;
-
                                     }
                                 }
                                 
@@ -828,16 +807,11 @@ namespace FlowSimulator
                                     {
                                         selectedIndex = 1;
                                         ((Merger) c).InputUp = true;
-                                        ((Merger) c).InPutUp = c1;
-                                     ((Merger) c).CurrentFlow += ((Merger) c1).CurrentFlow;
-                                        
                                     }
                                     else if (((Merger) c).InputDown == false)
                                     {
                                         selectedIndex = 2;
                                         ((Merger) c).InputDown = true;
-                                        ((Merger) c).InPutDown = c1;
-                                        ((Merger)c).CurrentFlow += ((Merger)c1).CurrentFlow;
                                     }
                                 }
 
