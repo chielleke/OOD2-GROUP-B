@@ -152,6 +152,8 @@ namespace FlowSimulator
                 if ((tempComponent = canvas.SelectComponent(mousepoint)) != null)
                 {
                     isSelected = true;
+                    if (tempComponent.GetType() == typeof (Splitter))
+                        trackBar1.Enabled = true;
                     this.Refresh();
 
 
@@ -163,11 +165,8 @@ namespace FlowSimulator
                     selectedComponent.UpdateSelectionArea();
                   
                     canvas.CreateComponent(selectedComponent);
-                    canvas.CreateUndo(ActionType.Create, selectedComponent);
-                    UndoButton.Enabled = true;
                     selectedComponent = null;
                     compIsMoving = false;
-                    
                     this.Refresh();
                     this.Cursor = Cursors.Arrow;
                 }
@@ -176,11 +175,8 @@ namespace FlowSimulator
                 
                 if (selectedComponent != null && canvas.IsOverlapping(selectedComponent.SelectionArea) || !area.IntersectsWith(new Rectangle(mousepoint, new Size(40, 40))))
                 {
-                    canvas.CreateUndo(ActionType.Move, selectedComponent);
-                    UndoButton.Enabled = true;
                     if (compIsMoving)
                     {
-                       
                         selectedComponent.Position = oldCoordinates;
                         selectedComponent.UpdateSelectionArea();
                        // if(selectedComponent)
@@ -208,14 +204,10 @@ namespace FlowSimulator
                         second = new Point(mousepoint.X, mousepoint.Y);
                         if (canvas.DrawPipeline(canvas.SelectComponent(first), canvas.SelectComponent(second)))
                         {   
+
                             connectedComp1 = false;
                             addNewPipeline = false;
 
-                            label7.Text = canvas.CalculateMaxFlow(canvas.SelectComponent(first),
-                                canvas.SelectComponent(second)).ToString(); 
-
-
-                           
                             this.Refresh();
                             this.Cursor = Cursors.Arrow;
                         }
@@ -359,30 +351,6 @@ namespace FlowSimulator
             selectedComponent = new Merger(new Point(0, 0));
         }
 
-        private void UndoButton_Click(object sender, EventArgs e)
-        {
-            canvas.UndoLastAction();
-            if (canvas.UndoRedoIndex==-1)
-            {
-                UndoButton.Enabled = false;
-            }
-            RedoButton.Enabled = true;
-            this.Refresh();
-
-        }
-
-        private void RedoButton_Click(object sender, EventArgs e)
-        {
-            canvas.RedoLastAction();
-            if (canvas.UndoRedoIndex +1 == canvas.UndoRedoList.Count)
-            {
-                RedoButton.Enabled = false;
-            }
-            UndoButton.Enabled = true;
-            this.Refresh();
-            
-        }
-
         private void btnPipe_Click(object sender, EventArgs e)
         {
             this.selectedComponent = null;
@@ -407,22 +375,24 @@ namespace FlowSimulator
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
             canvas.DeleteComponent(mousepoint);
            
             isSelected = false;
             this.Refresh();
         }
         Pipeline p;
-        private void textBox2_TextChanged(object sender, EventArgs e)
+
+        private void textBox2_TextChanged(object sender, EventArgs e) // capacity
         {
-            propertiesSet = false;
+          
             if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null)
             {
                 if (textBox2.Text != "")
                 {
                     selectedComponent.Capacity = Convert.ToInt32(textBox2.Text);
+                   selectedComponent.CurrentFlow = Convert.ToInt32(textBox1.Text);
                     flowLabel.Text = selectedComponent.Capacity+"("+selectedComponent.CurrentFlow+")";
+                   
                 }
             }
            
@@ -432,16 +402,17 @@ namespace FlowSimulator
                 {
                     p.Capacity = Convert.ToInt32(textBox1.Text);
                     flowLabel.Text = p.Capacity+"("+p.Flow+")";
+                    
                 }
             }
-
+            this.Refresh();
 
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)//  flow
         {
             Component temp;
-            propertiesSet = false;
+           
             if ((temp = canvas.SelectComponent(mousepoint)) != null)
             {
                 if (textBox1.Text != "")
@@ -451,7 +422,7 @@ namespace FlowSimulator
 
                 }
             }
-            Pipeline p;
+            
             if ((p = canvas.SelectPipeline(mousepoint)) != null)
             {
                 if (textBox1.Text != "")
@@ -462,33 +433,20 @@ namespace FlowSimulator
             }
         }
 
-        private int maxFlow, currentFlow;
+      
        
-
-        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        private double percentage, remainingpercentage;
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            //panel5.Enabled = true;
-            //maxFlow = 0;
-            //currentFlow = 0;
-            //if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null)
+            if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null && selectedComponent.GetType() == typeof(Splitter))
+            {
+                percentage = trackBar1.Value;
+                remainingpercentage = trackBar1.Maximum - percentage;
 
-               
-            //        currentFlow = Convert.ToInt32(textBox1.Text);
-            //        maxFlow = Convert.ToInt32(textBox2.Text);
-            //        if (currentFlow <= maxFlow)
-            //        {
-
-            //            selectedComponent.CurrentFlow = currentFlow;
-            //            selectedComponent.Capacity = maxFlow;
-
-            //        }
-            //        else
-            //        {
-            //            IWin32Window win = this;
-            //            tooltip.Show("current flow cannot be higher than the maximum flow.", win, Cursor.Position);
-            //        }
-
-                }
+                ((Splitter) selectedComponent).PercentageUp = percentage/10;
+                ((Splitter) selectedComponent).PercentageDown = remainingpercentage/10;
+            }
+        }
               
         
 
