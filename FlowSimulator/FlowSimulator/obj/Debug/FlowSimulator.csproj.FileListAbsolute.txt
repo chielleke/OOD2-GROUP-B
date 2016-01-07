@@ -51,3 +51,12 @@ D:\SCHOOL\OOD\Temp for merging in GIT\FlowSimulator - Copy\FlowSimulator\FlowSim
 D:\SCHOOL\OOD\Temp for merging in GIT\FlowSimulator - Copy\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.FlowNetworkSimulator.resources
 D:\SCHOOL\OOD\Temp for merging in GIT\FlowSimulator - Copy\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.Properties.Resources.resources
 D:\SCHOOL\OOD\Temp for merging in GIT\FlowSimulator - Copy\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.csproj.GenerateResource.Cache
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\bin\Debug\FlowSimulator.exe.config
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.exe
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.pdb
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\bin\Debug\FlowSimulator.exe
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\bin\Debug\FlowSimulator.pdb
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.csprojResolveAssemblyReference.cache
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.FlowNetworkSimulator.resources
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.Properties.Resources.resources
+D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.csproj.GenerateResource.Cache

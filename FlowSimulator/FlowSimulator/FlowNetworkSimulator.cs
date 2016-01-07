@@ -17,6 +17,7 @@ namespace FlowSimulator
         Canvas canvas; // drawing area
         Point mousepoint; //point where mouse was clicked
         int selectedIndex;
+        Part selectedPart, tempPart;
         Component selectedComponent, tempComponent;
         Point oldCoordinates; //old ccordinates of a component
         private Rectangle area;
@@ -267,7 +268,7 @@ namespace FlowSimulator
             if ((selectedPipeline = canvas.SelectPipeline(mousepoint)) != null)
             {
                 flowLabel.Location = canvas.getMidPoint(selectedPipeline);
-                flowLabel.Text = selectedPipeline.Capacity + "(" + selectedPipeline.Flow+")";
+                flowLabel.Text = selectedPipeline.Capacity + "(" + selectedPipeline.CurrentFlow+")";
             }
         }
 
@@ -284,11 +285,11 @@ namespace FlowSimulator
                     Rectangle tempRec = new Rectangle(mouseClick, new Size(40, 40));
                     if (canvas.IsOverlapping(tempRec) || !area.IntersectsWith(tempRec) && !propertiesSet)
                     {
-                        this.Cursor = new Cursor(((Bitmap)selectedComponent.ComponentIconImage(false)).GetHicon());
+                        this.Cursor = new Cursor(((Bitmap)((Part)selectedComponent).ComponentIconImage(false)).GetHicon());
                     }
                     else
                     {
-                        this.Cursor = new Cursor(((Bitmap)selectedComponent.ComponentIconImage(true)).GetHicon());
+                        this.Cursor = new Cursor(((Bitmap)((Part)selectedComponent).ComponentIconImage(true)).GetHicon());
 
                     }
                     if (compIsMoving)
@@ -317,7 +318,7 @@ namespace FlowSimulator
                 {
                     foreach (Component comp in canvas.Components)
                     {
-                        gr.DrawImage(comp.ComponentImage(true), comp.Position);
+                        gr.DrawImage(((Part)comp).ComponentImage(true), comp.Position);
                     }
                 }
                 if (isSelected)
@@ -431,7 +432,7 @@ namespace FlowSimulator
                 if (textBox2.Text != "")
                 {
                     p.Capacity = Convert.ToInt32(textBox1.Text);
-                    flowLabel.Text = p.Capacity+"("+p.Flow+")";
+                    flowLabel.Text = p.Capacity+"("+p.CurrentFlow+")";
                 }
             }
 
@@ -456,8 +457,8 @@ namespace FlowSimulator
             {
                 if (textBox1.Text != "")
                 {
-                    p.Flow = Convert.ToDouble(textBox1.Text);
-                    flowLabel.Text = p.Capacity + "(" + p.Flow + ")";
+                    p.CurrentFlow = Convert.ToInt32(textBox1.Text);
+                    flowLabel.Text = p.Capacity + "(" + p.CurrentFlow + ")";
                 }
             }
         }

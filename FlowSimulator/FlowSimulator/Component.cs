@@ -19,22 +19,42 @@ namespace FlowSimulator
         public Component OutPutUp { get; set; }
         public Component OutPutDown { get; set; }
 
+
         /// <summary>
         /// The current position of the component on the canvas
         /// </summary>
         /// 
-       
-        private Point position;
-        private Rectangle selectionArea;
-      
+        protected Point position;
+
+        protected Rectangle selectionArea;
+        
+        /// <summary>
+        /// Determines if the component is currently selected
+        /// </summary>
+        public bool UpdateSelectionArea()
+        {
+            this.selectionArea = new Rectangle(position, new Size(40, 40));
+
+            return true;
+
+        }
+        /// <summary>
+        /// The rectangle which will be drawn around a selected component
+        /// </summary>
+        /// 
+        //work on this
+        public System.Drawing.Rectangle SelectionArea
+        {
+            get { return selectionArea; }
+            set { selectionArea = value; }
+        }
         public Point Position
         {
             get { return position; }
 
-            set { position = value; } 
-           
-        }
+            set { position = value; }
 
+        }
         /// <summary>
         /// The maximum flow through the component
         /// </summary>
@@ -45,51 +65,10 @@ namespace FlowSimulator
         /// </summary>
         public int CurrentFlow { get; set; }
 
-        /// <summary>
-        /// Determines if the component is currently selected
-        /// </summary>
         
 
-        /// <summary>
-        /// The rectangle which will be drawn around a selected component
-        /// </summary>
-        /// 
-        //work on this
-        public System.Drawing.Rectangle SelectionArea
-        {
-            get { return selectionArea; }
-            set { selectionArea = value;} 
-        }
-
-        /// <summary>
-        /// To establish a connection between a component a pipeline
-        /// </summary>
-        /// <returns></returns>
-        public bool Connect()
-        {
-            throw new System.NotImplementedException();
-        }
-
-    public Component(Point _position) // Gate class constructor
-        {
-            this.position = _position;
-            Size s = new Size(40, 40);
-           selectionArea = new Rectangle(this.Position, new Size(40, 40));
-            
+       
    
-            
-
-        }
-    public abstract Image ComponentImage(bool isOccupied);
-    public abstract Image ComponentIconImage(bool isOccupied);
-    
-        public bool UpdateSelectionArea()
-    {
-        this.selectionArea = new Rectangle(position, new Size(40, 40));
-        
-            return true;
-        
-    }
         //Iclonable
         public object Clone()
         {

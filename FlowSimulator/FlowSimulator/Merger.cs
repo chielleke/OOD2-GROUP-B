@@ -6,8 +6,8 @@ using System.Drawing;
 
 namespace FlowSimulator
 {
-    public class Merger : Component
-    {
+    public class Merger : Part
+    {  
         private Image compImage, compImageNot, compIcon, compIconNot;
         /// <summary>
         /// The pipeline connected to the top input node

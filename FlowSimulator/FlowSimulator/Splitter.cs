@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace FlowSimulator
 {
-    public class Splitter : Component
+    public class Splitter : Part
     {
         private Image compImage, compImageNot, compIcon, compIconNot;
         /// <summary>

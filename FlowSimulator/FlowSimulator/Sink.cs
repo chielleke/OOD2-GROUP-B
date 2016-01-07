@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace FlowSimulator
 {
-    public class Sink : Component
+    public class Sink : Part
     {
         private Image compImage, compImageNot, compIcon, compIconNot;
         /// <summary>

@@ -7,10 +7,9 @@ using System.Drawing;
 namespace FlowSimulator
 {
 
-    public class Pipeline
+    public class Pipeline :Component
     {
-        public double Capacity { get; set; }
-        public double Flow { get; set; }
+        
         /// <summary>
         /// The input component connected to the pipeline
         /// </summary>
@@ -20,7 +19,7 @@ namespace FlowSimulator
         {
             this.Input = input;
             this.Output = output;
-            this.Flow = Convert.ToDouble(input.CurrentFlow);
+            this.CurrentFlow = Convert.ToInt32(input.CurrentFlow);
 
         }
 
@@ -28,10 +27,10 @@ namespace FlowSimulator
         public double getCapacity(Component from, Component to)
         {//forward flow
             if (Input.Equals(from) && Output.Equals(to))
-                return Capacity - Flow;
+                return Capacity - CurrentFlow;
             //backwards flow
             if (Input.Equals(to) && Output.Equals(from))
-                return Flow;
+                return CurrentFlow;
 
             throw new ArgumentException("Both from " + from.GetType() + " and " + from.GetType() +
                                         "should be a part of this pipeline");
@@ -44,10 +43,10 @@ namespace FlowSimulator
                 throw new ArgumentException("The flow: "+flow+"exceeds the limit");
            // forward flow
             if (Input.Equals(from) && Output.Equals(to))
-                this.Flow += flow;
+                this.CurrentFlow += flow;
             // backwards flow
             if (Input.Equals(to) && Output.Equals(from))
-                this.Flow -= flow;
+                this.CurrentFlow -= flow;
                 
             throw new ArgumentException("Both from: "+from.GetType()+" and "+to.GetType()+" should be a part of this pipeline");
         }
@@ -80,7 +79,7 @@ namespace FlowSimulator
             this.Output = c2;
             _selectedOutput = selectedOutput;
             this.Capacity = 0;
-            this.Flow = Convert.ToDouble(c1.CurrentFlow);
+            this.CurrentFlow = Convert.ToInt32(c1.CurrentFlow);
             //this.AssignInputPoint();
            // this.AssignOutputPoint();
         }
@@ -91,7 +90,7 @@ namespace FlowSimulator
             _selectedOutput = selectedOutput;
             _selectedOutput2 = selectedOutput2;
             this.Capacity = 0;
-            this.Flow = Convert.ToDouble(c1.CurrentFlow);
+            this.CurrentFlow = Convert.ToInt32(c1.CurrentFlow);
           //  this.AssignInputPoint();
            // this.AssignOutputPoint();
         }
