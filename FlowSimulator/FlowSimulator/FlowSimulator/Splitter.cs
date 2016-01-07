@@ -72,8 +72,11 @@ namespace FlowSimulator
           throw new System.NotImplementedException();
        }
 
+     
+
         public Splitter(Point position): base(position)
-       {
+        {
+            
            this.compImage = new Bitmap(Properties.Resources.splitter);
            this.compImageNot = new Bitmap(Properties.Resources.splitterNot);
            this.compIcon = new Bitmap(Properties.Resources.splitterIco);

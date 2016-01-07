@@ -60,8 +60,11 @@
             this.cmsEdit = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsEditPipeline = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowLabel = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RedoButton)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
@@ -90,16 +93,17 @@
             this.panel1.Controls.Add(this.pictureBox2);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1083, 59);
             this.panel1.TabIndex = 0;
             // 
             // RedoButton
             // 
+            this.RedoButton.Enabled = false;
             this.RedoButton.Image = global::FlowSimulator.Properties.Resources.redo;
             this.RedoButton.Location = new System.Drawing.Point(231, 15);
-            this.RedoButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.RedoButton.Margin = new System.Windows.Forms.Padding(4);
             this.RedoButton.Name = "RedoButton";
             this.RedoButton.Size = new System.Drawing.Size(47, 36);
             this.RedoButton.TabIndex = 7;
@@ -110,7 +114,7 @@
             // 
             this.panel6.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.panel6.Location = new System.Drawing.Point(0, 80);
-            this.panel6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel6.Margin = new System.Windows.Forms.Padding(4);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(123, 26);
             this.panel6.TabIndex = 3;
@@ -119,7 +123,7 @@
             // 
             this.pictureBox6.Image = global::FlowSimulator.Properties.Resources.help;
             this.pictureBox6.Location = new System.Drawing.Point(333, 15);
-            this.pictureBox6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox6.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox6.Name = "pictureBox6";
             this.pictureBox6.Size = new System.Drawing.Size(37, 36);
             this.pictureBox6.TabIndex = 6;
@@ -129,7 +133,7 @@
             // 
             this.pictureBox5.Image = global::FlowSimulator.Properties.Resources.delete;
             this.pictureBox5.Location = new System.Drawing.Point(285, 15);
-            this.pictureBox5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox5.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(40, 36);
             this.pictureBox5.TabIndex = 5;
@@ -137,9 +141,10 @@
             // 
             // UndoButton
             // 
+            this.UndoButton.Enabled = false;
             this.UndoButton.Image = global::FlowSimulator.Properties.Resources.undo;
             this.UndoButton.Location = new System.Drawing.Point(176, 15);
-            this.UndoButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.UndoButton.Margin = new System.Windows.Forms.Padding(4);
             this.UndoButton.Name = "UndoButton";
             this.UndoButton.Size = new System.Drawing.Size(47, 36);
             this.UndoButton.TabIndex = 4;
@@ -150,7 +155,7 @@
             // 
             this.pictureBox3.Image = global::FlowSimulator.Properties.Resources.save;
             this.pictureBox3.Location = new System.Drawing.Point(124, 15);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(43, 36);
             this.pictureBox3.TabIndex = 3;
@@ -161,7 +166,7 @@
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(63, 15);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(53, 36);
             this.pictureBox2.TabIndex = 2;
@@ -171,7 +176,7 @@
             // 
             this.pictureBox1.Image = global::FlowSimulator.Properties.Resources._new;
             this.pictureBox1.Location = new System.Drawing.Point(9, 15);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(45, 36);
             this.pictureBox1.TabIndex = 2;
@@ -187,7 +192,7 @@
             this.panel2.Controls.Add(this.btnSink);
             this.panel2.Controls.Add(this.btnPump);
             this.panel2.Location = new System.Drawing.Point(0, 84);
-            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(123, 540);
             this.panel2.TabIndex = 1;
@@ -197,7 +202,7 @@
             this.btnPipe.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnPipe.Image = global::FlowSimulator.Properties.Resources.pipe_icon;
             this.btnPipe.Location = new System.Drawing.Point(7, 348);
-            this.btnPipe.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPipe.Margin = new System.Windows.Forms.Padding(4);
             this.btnPipe.Name = "btnPipe";
             this.btnPipe.Size = new System.Drawing.Size(107, 79);
             this.btnPipe.TabIndex = 13;
@@ -209,7 +214,7 @@
             this.btnMerger.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnMerger.Image = global::FlowSimulator.Properties.Resources.merger_icon;
             this.btnMerger.Location = new System.Drawing.Point(7, 265);
-            this.btnMerger.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnMerger.Margin = new System.Windows.Forms.Padding(4);
             this.btnMerger.Name = "btnMerger";
             this.btnMerger.Size = new System.Drawing.Size(107, 79);
             this.btnMerger.TabIndex = 12;
@@ -221,7 +226,7 @@
             this.btnSplitter.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnSplitter.Image = global::FlowSimulator.Properties.Resources.splitter;
             this.btnSplitter.Location = new System.Drawing.Point(7, 178);
-            this.btnSplitter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSplitter.Margin = new System.Windows.Forms.Padding(4);
             this.btnSplitter.Name = "btnSplitter";
             this.btnSplitter.Size = new System.Drawing.Size(107, 79);
             this.btnSplitter.TabIndex = 11;
@@ -233,7 +238,7 @@
             this.btnSink.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnSink.Image = global::FlowSimulator.Properties.Resources.sink_icon;
             this.btnSink.Location = new System.Drawing.Point(7, 92);
-            this.btnSink.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSink.Margin = new System.Windows.Forms.Padding(4);
             this.btnSink.Name = "btnSink";
             this.btnSink.Size = new System.Drawing.Size(107, 79);
             this.btnSink.TabIndex = 10;
@@ -245,7 +250,7 @@
             this.btnPump.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.btnPump.Image = global::FlowSimulator.Properties.Resources.pump_icon;
             this.btnPump.Location = new System.Drawing.Point(7, 6);
-            this.btnPump.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnPump.Margin = new System.Windows.Forms.Padding(4);
             this.btnPump.Name = "btnPump";
             this.btnPump.Size = new System.Drawing.Size(107, 79);
             this.btnPump.TabIndex = 9;
@@ -270,7 +275,7 @@
             this.panel4.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.panel4.Controls.Add(this.label2);
             this.panel4.Location = new System.Drawing.Point(121, 58);
-            this.panel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel4.Margin = new System.Windows.Forms.Padding(4);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(961, 26);
             this.panel4.TabIndex = 3;
@@ -298,16 +303,17 @@
             this.panel5.Controls.Add(this.label5);
             this.panel5.Controls.Add(this.label4);
             this.panel5.Controls.Add(this.label3);
-            this.panel5.Location = new System.Drawing.Point(935, 84);
-            this.panel5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel5.Location = new System.Drawing.Point(932, 0);
+            this.panel5.Margin = new System.Windows.Forms.Padding(4);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(148, 540);
+            this.panel5.Size = new System.Drawing.Size(148, 622);
             this.panel5.TabIndex = 4;
             // 
             // textBox3
             // 
             this.textBox3.Location = new System.Drawing.Point(91, 97);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(45, 22);
             this.textBox3.TabIndex = 6;
@@ -325,18 +331,22 @@
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(91, 63);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(45, 22);
             this.textBox2.TabIndex = 4;
+            this.textBox2.Text = "0";
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(91, 31);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(45, 22);
             this.textBox1.TabIndex = 3;
+            this.textBox1.Text = "0";
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label5
             // 
@@ -374,7 +384,7 @@
             this.panel7.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel7.Controls.Add(this.label1);
             this.panel7.Location = new System.Drawing.Point(0, 58);
-            this.panel7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel7.Margin = new System.Windows.Forms.Padding(4);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(123, 26);
             this.panel7.TabIndex = 3;
@@ -384,23 +394,31 @@
             this.cmsEdit.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.cmsEdit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.moveToolStripMenuItem,
-            this.deleteToolStripMenuItem});
+            this.deleteToolStripMenuItem,
+            this.propertiesToolStripMenuItem});
             this.cmsEdit.Name = "cmsEdit";
-            this.cmsEdit.Size = new System.Drawing.Size(123, 52);
+            this.cmsEdit.Size = new System.Drawing.Size(146, 76);
             // 
             // moveToolStripMenuItem
             // 
             this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
-            this.moveToolStripMenuItem.Size = new System.Drawing.Size(122, 24);
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(145, 24);
             this.moveToolStripMenuItem.Text = "Move";
             this.moveToolStripMenuItem.Click += new System.EventHandler(this.moveToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(122, 24);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(145, 24);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // propertiesToolStripMenuItem
+            // 
+            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(145, 24);
+            this.propertiesToolStripMenuItem.Text = "Properties";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // cmsEditPipeline
             // 
@@ -417,18 +435,40 @@
             this.deleteToolStripMenuItem1.Text = "Delete";
             this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
             // 
+            // flowLabel
+            // 
+            this.flowLabel.AutoSize = true;
+            this.flowLabel.Location = new System.Drawing.Point(0, 0);
+            this.flowLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.flowLabel.Name = "flowLabel";
+            this.flowLabel.Size = new System.Drawing.Size(46, 17);
+            this.flowLabel.TabIndex = 5;
+            this.flowLabel.Text = "label7";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(432, 176);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(46, 17);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "label7";
+            // 
             // FlowNetworkSimulator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1080, 622);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.flowLabel);
             this.Controls.Add(this.panel7);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "FlowNetworkSimulator";
             this.Text = "Flow Simulator";
@@ -454,6 +494,7 @@
             this.cmsEdit.ResumeLayout(false);
             this.cmsEditPipeline.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -491,6 +532,9 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip cmsEditPipeline;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
+        private System.Windows.Forms.Label flowLabel;
+        private System.Windows.Forms.Label label7;
     }
 }
 
