@@ -19,6 +19,7 @@ namespace FlowSimulator
         {
             this.Input = input;
             this.Output = output;
+            this.Capacity = 10;
             if (input.GetType() == typeof(Splitter))
             {
                 if (input.OutPutUp != null && input.OutPutDown == null)
@@ -66,8 +67,9 @@ namespace FlowSimulator
         {
             this.Input = c1;
             this.Output = c2;
+            this.Capacity = 10;
             _selectedOutput = selectedOutput;
-            this.Capacity = 0;
+           
             if (c1.GetType() == typeof(Splitter))
             {
                 if (c1.OutPutUp != null && c1.OutPutDown == null)
@@ -83,9 +85,10 @@ namespace FlowSimulator
         {
             this.Input = c1;
             this.Output = c2;
+            this.Capacity = 10;
             _selectedOutput = selectedOutput;
             _selectedOutput2 = selectedOutput2;
-            this.Capacity = 0;
+           
             if (c1.GetType() == typeof(Splitter))
             {
                 if (c1.OutPutUp != null && c1.OutPutDown == null)

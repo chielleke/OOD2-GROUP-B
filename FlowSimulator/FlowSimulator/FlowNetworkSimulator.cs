@@ -31,7 +31,8 @@ namespace FlowSimulator
             SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
             canvas = new Canvas();
             area = new Rectangle(new Point(120,95), new Size(550, 380));
-            //selectedIndex = 0;
+            label8.Text = "Upper flow: " + 50 + "\n" + "Lower flow: " + 50;
+           
         }
 
         private void label1_Click(object sender, EventArgs e)
