@@ -1,0 +1,6 @@
+FlowSimulator/.vs/FlowSimulator/v14/.suo
+*.exe
+FlowSimulator/FlowSimulator/bin/Debug/FlowSimulator.pdb
+*.cache
+FlowSimulator/FlowSimulator/obj/Debug/FlowSimulator.exe
+*.exe
