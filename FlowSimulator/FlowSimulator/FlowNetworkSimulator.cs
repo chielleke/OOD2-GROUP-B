@@ -212,10 +212,7 @@ namespace FlowSimulator
                             connectedComp1 = false;
                             addNewPipeline = false;
 
-                            label7.Text = canvas.CalculateMaxFlow(canvas.SelectComponent(first),
-                                canvas.SelectComponent(second)).ToString(); 
-
-
+                           
                            
                             this.Refresh();
                             this.Cursor = Cursors.Arrow;
@@ -422,54 +419,84 @@ namespace FlowSimulator
             this.Refresh();
         }
         Pipeline p;
-        private void textBox2_TextChanged(object sender, EventArgs e)
+        private void textBox2_TextChanged(object sender, EventArgs e) // capacity
         {
-            propertiesSet = false;
+
             if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null)
             {
                 if (textBox2.Text != "")
                 {
                     selectedComponent.Capacity = Convert.ToInt32(textBox2.Text);
-                    flowLabel.Text = selectedComponent.Capacity+"("+selectedComponent.CurrentFlow+")";
+                    selectedComponent.CurrentFlow = Convert.ToInt32(textBox1.Text);
+
+                    flowLabel.Text = selectedComponent.Capacity + "(" + selectedComponent.CurrentFlow + ")";
+                    if (selectedComponent.Capacity < selectedComponent.CurrentFlow)
+                        flowLabel.ForeColor = Color.Red;
+
+                    else flowLabel.ForeColor = Color.Black;
+
                 }
             }
-           
+
             if ((p = canvas.SelectPipeline(mousepoint)) != null)
             {
                 if (textBox2.Text != "")
                 {
                     p.Capacity = Convert.ToInt32(textBox1.Text);
-                    flowLabel.Text = p.Capacity+"("+p.CurrentFlow+")";
+                    flowLabel.Text = p.Capacity + "(" + p.CurrentFlow + ")";
+
                 }
             }
-
+            this.Refresh();
 
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)//  flow
         {
             Component temp;
-            propertiesSet = false;
+
             if ((temp = canvas.SelectComponent(mousepoint)) != null)
             {
                 if (textBox1.Text != "")
                 {
                     temp.CurrentFlow = Convert.ToInt32(textBox1.Text);
                     flowLabel.Text = temp.Capacity + "(" + temp.CurrentFlow + ")";
-
+                    if (temp.Capacity < temp.CurrentFlow)
+                        flowLabel.ForeColor = Color.Red;
+                    else flowLabel.ForeColor = Color.Black;
+                    canvas.UpdateProperties(temp);
                 }
             }
-            Pipeline p;
+
             if ((p = canvas.SelectPipeline(mousepoint)) != null)
             {
                 if (textBox1.Text != "")
                 {
-                    p.CurrentFlow = Convert.ToInt32(textBox1.Text);
+                    p.CurrentFlow = Convert.ToDouble(textBox1.Text);
                     flowLabel.Text = p.Capacity + "(" + p.CurrentFlow + ")";
                 }
             }
+            this.Refresh();
         }
 
+
+
+        private double percentage, remainingpercentage;
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null && selectedComponent.GetType() == typeof(Splitter))
+            {
+                percentage = trackBar1.Value;
+                remainingpercentage = trackBar1.Maximum - percentage;
+                label8.Text = "Upperflow: " + percentage * 10 + "\n" + "Lowerflow: " + remainingpercentage * 10;
+
+                ((Splitter)selectedComponent).PercentageUp = percentage / 10;
+                ((Splitter)selectedComponent).PercentageDown = remainingpercentage / 10;
+
+
+            }
+        }
+            
         private int maxFlow, currentFlow;
        
 

@@ -212,14 +212,7 @@ namespace FlowSimulator
         /// 
         private Pipeline p;
       
-        public double CalculateMaxFlow(Component c1, Component c2)
-        {
-           
-            double flow = c1.CurrentFlow;
-            c2.CurrentFlow = c1.CurrentFlow;
-            p = new Pipeline(c1, c2, flow);
-            return p.getCapacity(c1, c2);
-        }
+    
         /// <summary>
         /// To calculate the maximum flow through the network
         /// </summary>
@@ -467,367 +460,496 @@ namespace FlowSimulator
            }
            Components.Remove(SelectComponent(mouseClicked)); 
        }
+        public Pipeline findSplitterPipeline(Component input)
+        {
+            Pipeline temp = null;
+            foreach (Pipeline pipeline in Components)
+            {
+                if (pipeline.Input == input)
+                    return SelectPipeline(new Point(input.Position.X + 40, input.Position.Y + 10));
+                // temp = pipeline;
+            }
+            return temp;
+        }
+        public void UpdateProperties(Component updatedComponent)
+        {
+            Component temp = null;
+           // Pipeline pipeline = null;
+            foreach (Pipeline pipeline in Components)
+            {
+                
+                  //  pipeline = ((Pipeline)pipe);
+                if (pipeline.Input == updatedComponent)
+                {
+
+                    pipeline.Output.CurrentFlow += (updatedComponent.CurrentFlow - pipeline.CurrentFlow);
+                    pipeline.CurrentFlow = updatedComponent.CurrentFlow;
+
+
+                    if (pipeline.Output.GetType() == typeof (Splitter))
+                    {
+                        if (pipeline.Output.OutPutUp != null)
+                        {
+
+                            p = findSplitterPipeline(pipeline.Output.OutPutUp);
+                            p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                       ((Splitter) pipeline.Output).PercentageUp, 2);
+                            pipeline.Output.OutPutUp.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                                              ((Splitter) pipeline.Output).PercentageUp,
+                                2);
+
+
+                        }
+                        if (pipeline.Output.OutPutDown != null)
+                        {
+
+                            p = findSplitterPipeline(pipeline.Output.OutPutDown);
+                            p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                       ((Splitter) pipeline.Output).PercentageDown, 2);
+                            pipeline.Output.OutPutDown.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                                                ((Splitter) pipeline.Output)
+                                                                                    .PercentageDown, 2);
+
+                        }
+                        temp = pipeline.Output;
+
+                    }
+                    break;
+                }
+                  
+                else
+                {
+                    temp = pipeline.Output;
+                    break;
+                }
+            }
+            if (temp != null)
+            {
+                UpdateProperties(temp);
+
+
+            }
+
+        }
         public bool DrawPipeline(Component c1, Component c2)
         {
             int selectedIndex = 0;
 
             Component temp1 = c1;
             Component temp2 = c2;
-           if(c1 != c2)
-           { 
-            if (c1 is Pump)
+            if (c1 != c2)
             {
-                if (((Pump)c1).PipelineConnected == false)
+                if (c1 is Pump)
                 {
-                    bool cr = ((Pump)c1).PipelineConnected;
-                    if (c2 is Sink)
+                    if (((Pump)c1).PipelineConnected == false)
                     {
-                        if (((Sink)c2).PipelineConnected == false)
+                        bool cr = ((Pump)c1).PipelineConnected;
+                        if (c2 is Sink)
                         {
-
-                            foreach (Component c in Components)
+                            if (((Sink)c2).PipelineConnected == false)
                             {
-                                if (c == c1)
-                                {
-                                    ((Pump)c).PipelineConnected = true;
-                                }
-                                else if (c == c2)
-                                {
-                                    ((Sink)c).PipelineConnected = true;
-                                }
 
-                            }
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            return true;
-                            selectedIndex = 0;
-                        }
-                    }
-                    else if (c2 is Splitter)
-                    {
-                        if (((Splitter)c2).Input == false)
-                        {
-                            ((Splitter)c2).InPut = c1;
-                            foreach (Component c in Components)
-                            {
-                                if (c == c1)
+                                foreach (Component c in Components)
                                 {
-                                    ((Pump)c).PipelineConnected = true;
-                                }
-                                else if (c == c2)
-                                {
-
-                                    ((Splitter)c).Input = true;
-
-                                }
-
-                            }
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            selectedIndex = 0;
-                            return true;
-                        }
-                    }
-                    else if (c2 is Merger)
-                    {
-                        if (((Merger)c2).InputDown == false || ((Merger)c2).InputUp == false)
-                        {
-                            bool b = ((Pump)c1).PipelineConnected;
-
-                            foreach (Component c in Components)
-                            {
-                                if (c == c1)
-                                {
-                                    ((Pump)c).PipelineConnected = true;
-                                    
-                                }
-                                else if (c == c2)
-                                {
-                                    if (((Merger)c).InputUp == false)
+                                    if (c == c1)
                                     {
-                                        selectedIndex = 1;
-                                        ((Merger)c).InputUp = true;
-                                        ((Merger)c).InPutUp = c1;
-                                     
+                                        ((Pump)c).PipelineConnected = true;
+                                        ((Pump)c).OutPut = c2;
                                     }
-                                    else if (((Merger)c).InputDown == false)
+                                    else if (c == c2)
                                     {
-                                        selectedIndex = 2;
-                                        ((Merger)c).InputDown = true;
-                                        ((Merger) c).InPutDown = c1;
+                                        ((Sink)c).PipelineConnected = true;
+                                        ((Sink)c).InPut = c1;
+                                        ((Sink)c).CurrentFlow += c1.CurrentFlow;
+
                                     }
 
-                                
                                 }
-
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                return true;
+                                selectedIndex = 0;
                             }
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            selectedIndex = 0;
-                            return true;
+                        }
+                        else if (c2 is Splitter)
+                        {
+                            if (((Splitter)c2).Input == false)
+                            {
+
+
+                                foreach (Component c in Components)
+                                {
+                                    if (c == c1)
+                                    {
+                                        ((Pump)c).PipelineConnected = true;
+                                    }
+                                    else if (c == c2)
+                                    {
+
+                                        ((Splitter)c).Input = true;
+                                        ((Splitter)c2).InPut = c1;
+                                        ((Splitter)c).CurrentFlow += c1.CurrentFlow;
+
+                                    }
+
+                                }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                selectedIndex = 0;
+                                return true;
+                            }
+                        }
+                        else if (c2 is Merger)
+                        {
+                            if (((Merger)c2).InputDown == false || ((Merger)c2).InputUp == false)
+                            {
+                                bool b = ((Pump)c1).PipelineConnected;
+
+                                foreach (Component c in Components)
+                                {
+                                    if (c == c1)
+                                    {
+                                        ((Pump)c).PipelineConnected = true;
+
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Merger)c).InputUp == false)
+                                        {
+                                            selectedIndex = 1;
+                                            ((Merger)c).InputUp = true;
+                                            ((Merger)c).InPutUp = c1;
+
+                                            ((Merger)c2).CurrentFlow += c1.CurrentFlow;
+
+                                        }
+                                        else if (((Merger)c).InputDown == false)
+                                        {
+                                            selectedIndex = 2;
+                                            ((Merger)c).InputDown = true;
+                                            ((Merger)c).InPutDown = c1;
+                                            ((Merger)c2).CurrentFlow += c1.CurrentFlow;
+                                        }
+
+
+                                    }
+
+                                }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                selectedIndex = 0;
+                                return true;
+                            }
                         }
                     }
                 }
-            }
-            else if (c1 is Sink)
-            {
-                temp1 = c2;
-                temp2 = c1;
-                
-                if (DrawPipeline(temp1, temp2))
-                {
-                    return true;
-                    
-                }
-            }
-
-            else if (c1 is Splitter)
-            {
-                if(((Splitter)c1).OutputDown == false ||((Splitter)c1).OutputUp == false  )
-                {
-                if (c2 is Pump)
+                else if (c1 is Sink)
                 {
                     temp1 = c2;
                     temp2 = c1;
+
                     if (DrawPipeline(temp1, temp2))
+                    {
                         return true;
+
+                    }
                 }
-                else if (c2 is Sink)
+
+                else if (c1 is Splitter)
                 {
-                    bool alreadyConnected = false;
-                    if (((Sink)c2).PipelineConnected == false)
+                    if (((Splitter)c1).OutputDown == false || ((Splitter)c1).OutputUp == false)
                     {
-                        foreach (Component c in Components)
+                        if (c2 is Pump)
                         {
-                            if (c == c1)
+                            temp1 = c2;
+                            temp2 = c1;
+                            if (DrawPipeline(temp1, temp2))
+                                return true;
+                        }
+                        else if (c2 is Sink)
+                        {
+                            bool alreadyConnected = false;
+
+                            if (((Sink)c2).PipelineConnected == false)
                             {
-                                if (((Splitter)c).OutputUp == false)
+                                foreach (Component c in Components)
                                 {
-                                    
-                                    selectedIndex = 1;
-                                    ((Splitter)c).OutputUp = true;
-                                }
+                                    if (c == c1)
+                                    {
+                                        if (((Splitter)c).OutputUp == false)
+                                        {
 
-                                else if (((Splitter)c).OutputDown == false)
-                                {
-                                    selectedIndex = 2;
-                                    ((Splitter)c).OutputDown = true;
+                                            selectedIndex = 1;
+                                            ((Splitter)c).OutputUp = true;
+                                            c1.OutPutUp = c2;
+
+                                            double flow = c1.CurrentFlow * ((Splitter)c).PercentageUp;
+                                            c1.OutPutUp.CurrentFlow = Math.Round(flow, 2);
+
+
+                                        }
+
+                                        else if (((Splitter)c).OutputDown == false)
+                                        {
+                                            selectedIndex = 2;
+                                            ((Splitter)c).OutputDown = true;
+                                            c1.OutPutDown = c2;
+                                            double flow = c1.CurrentFlow * ((Splitter)c).PercentageDown;
+                                            c1.OutPutDown.CurrentFlow = Math.Round(flow, 2);
+
+
+
+
+                                        }
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Sink)c).PipelineConnected == false)
+                                        {
+
+                                            ((Sink)c).PipelineConnected = true;
+                                            ((Sink)c).InPut = c1;
+
+                                        }
+                                        else
+                                        {
+                                            alreadyConnected = true;
+                                        }
+                                    }
+
 
                                 }
-                            }
-                            else if (c == c2)
-                            {
-                                if (((Sink)c).PipelineConnected == false)
+                                if (!alreadyConnected)
                                 {
+                                    Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                    selectedIndex = 0;
+                                    return true;
 
-                                    ((Sink)c).PipelineConnected = true;
                                 }
-                                else
-                                {
-                                    alreadyConnected = true;
-                                }
+                                return false;
                             }
 
 
                         }
-                        if (!alreadyConnected)
-                        {
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            selectedIndex = 0;
-                            return true;
 
+                        else if (c2 is Merger)
+                        {
+                            int selectedIndex2 = 0;
+                            if (((Merger)c2).InputDown == false || ((Merger)c2).InputUp == false)
+                            {
+                                foreach (Component c in Components)
+                                {
+                                    if (c == c1)
+                                    {
+                                        if (((Splitter)c).OutputUp == false)
+                                        {
+                                            selectedIndex = 1;
+                                            ((Splitter)c).OutputUp = true;
+                                            c1.OutPutUp = c2;
+                                            double flow = c1.CurrentFlow * ((Splitter)c).PercentageUp;
+                                            c1.CurrentFlow = Math.Round(flow, 2);
+                                            c2.CurrentFlow += c1.CurrentFlow;
+
+                                        }
+
+                                        else if (((Splitter)c).OutputDown == false)
+                                        {
+                                            selectedIndex = 2;
+
+                                            ((Splitter)c).OutputDown = true;
+                                            c1.OutPutDown = c2;
+                                            double flow = c1.CurrentFlow * ((Splitter)c).PercentageDown;
+                                            c1.CurrentFlow = Math.Round(flow, 2);
+                                            c2.CurrentFlow += c1.CurrentFlow;
+
+                                        }
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Merger)c).InputUp == false)
+                                        {
+                                            selectedIndex2 = 1;
+                                            ((Merger)c).InputUp = true;
+                                            ((Merger)c).InPutUp = c1;
+                                            ((Merger)c).CurrentFlow += c1.CurrentFlow;
+                                        }
+                                        else if (((Merger)c).InputDown == false)
+                                        {
+                                            selectedIndex2 = 2;
+                                            ((Merger)c).InputDown = true;
+                                            ((Merger)c).InPutDown = c1;
+                                            ((Merger)c).CurrentFlow += ((Merger)c).InPutDown.CurrentFlow;
+                                        }
+
+                                    }
+
+                                }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex, selectedIndex2));
+                                selectedIndex = 0;
+                                return true;
+                            }
                         }
-                        return false;
+                        else if (c2 is Splitter)
+                        {
+                            if (((Splitter)c2).Input == false)
+                            {
+
+
+                                foreach (Component c in Components)
+                                {
+                                    if (c == c1)
+                                    {
+                                        if (((Splitter)c).OutputUp == false)
+                                        {
+                                            selectedIndex = 1;
+                                            ((Splitter)c).OutputUp = true;
+                                            ((Splitter)c).OutPutUp = c1;
+                                            double flow = c1.CurrentFlow * ((Splitter)c).PercentageUp;
+                                            c1.CurrentFlow = Math.Round(flow, 2);
+                                            c2.CurrentFlow += c1.CurrentFlow;
+                                        }
+                                        else if (((Splitter)c).OutputDown == false)
+                                        {
+                                            selectedIndex = 2;
+
+                                            ((Splitter)c).OutputDown = true;
+                                            ((Splitter)c).OutPutDown = c1;
+                                            double flow = c1.CurrentFlow * ((Splitter)c).PercentageDown;
+                                            c1.CurrentFlow = Math.Round(flow, 2);
+                                            c2.CurrentFlow += c1.CurrentFlow;
+
+                                        }
+
+
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Splitter)c).Input == false)
+                                            ((Splitter)c).Input = true;
+                                        ((Splitter)c2).InPut = c1;
+
+                                    }
+
+                                }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                selectedIndex = 0;
+                                return true;
+                            }
+                        }
                     }
-                   
-                   
+
                 }
-                
-                else if (c2 is Merger)
+                else if (c1 is Merger)
                 {
-                    int selectedIndex2 = 0;
-                    if (((Merger)c2).InputDown == false || ((Merger)c2).InputUp == false)
+                    if (((Merger)c1).Output == false)
                     {
-                        foreach (Component c in Components)
+
+                        if (c2 is Pump)
                         {
-                            if (c == c1)
+                            temp1 = c2;
+                            temp2 = c1;
+                            if (DrawPipeline(temp1, temp2))
+                                return true;
+                        }
+                        else if (c2 is Sink)
+                        {
+                            if (((Sink)c2).PipelineConnected == false)
                             {
-                                if (((Splitter)c).OutputUp == false)
+                                foreach (Component c in Components)
                                 {
-                                    selectedIndex = 1;
-                                    ((Splitter)c).OutputUp = true;
-                                }
+                                    if (c == c1)
+                                    {
+                                        if (((Merger)c).Output == false)
 
-                                else if (((Splitter)c).OutputDown == false)
-                                {
-                                    selectedIndex = 2;
-                                    ((Splitter)c).OutputDown = true;
+                                            ((Merger)c).Output = true;
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Sink)c).PipelineConnected == false)
+                                        {
+                                            selectedIndex = 0;
+                                            ((Sink)c).PipelineConnected = true;
+                                            ((Sink)c).InPut = c1;
+                                            ((Sink)c).CurrentFlow += c1.CurrentFlow;
+                                        }
+                                    }
+
                                 }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                selectedIndex = 0;
+                                return true;
                             }
-                            else if (c == c2)
+                        }
+                        else if (c2 is Splitter)
+                        {
+                            if (((Splitter)c2).Input == false)
                             {
-                                if (((Merger)c).InputUp == false)
-                                {
-                                    selectedIndex2 = 1;
-                                    ((Merger)c).InputUp = true;
-                                    ((Merger) c).InPutUp = c1;
-                                }
-                                else if (((Merger)c).InputDown == false)
-                                {
-                                    selectedIndex2 = 2;
-                                    ((Merger)c).InputDown = true;
-                                    ((Merger)c).InPutDown = c1;
-                                }
 
+                                foreach (Component c in Components)
+                                {
+                                    if (c == c1)
+                                    {
+                                        if (((Merger)c).Output == false)
+
+                                            ((Merger)c).Output = true;
+
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Splitter)c).Input == false)
+                                        {
+                                            selectedIndex = 0;
+                                            ((Splitter)c).Input = true;
+                                            ((Splitter)c).InPut = c1;
+                                            ((Splitter)c).CurrentFlow += c1.CurrentFlow;
+
+                                        }
+                                    }
+
+                                }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                selectedIndex = 0;
+                                return true;
+                            }
+                        }
+                        else if (c2 is Merger)
+                        {
+                            if (((Merger)c2).InputDown == false || ((Merger)c2).InputUp == false)
+                            {
+                                foreach (Component c in Components)
+                                {
+                                    if (c == c1)
+                                    {
+                                        if (((Merger)c).Output == false)
+
+                                            ((Merger)c).Output = true;
+
+                                    }
+                                    else if (c == c2)
+                                    {
+                                        if (((Merger)c).InputUp == false)
+                                        {
+                                            selectedIndex = 1;
+                                            ((Merger)c).InputUp = true;
+                                            ((Merger)c).InPutUp = c1;
+                                            ((Merger)c).CurrentFlow += ((Merger)c1).CurrentFlow;
+
+                                        }
+                                        else if (((Merger)c).InputDown == false)
+                                        {
+                                            selectedIndex = 2;
+                                            ((Merger)c).InputDown = true;
+                                            ((Merger)c).InPutDown = c1;
+                                            ((Merger)c).CurrentFlow += ((Merger)c1).CurrentFlow;
+                                        }
+                                    }
+
+                                }
+                                Components.Add(new Pipeline(c1, c2, selectedIndex));
+                                selectedIndex = 0;
+                                return true;
                             }
 
                         }
-                        Components.Add(new Pipeline(c1, c2, selectedIndex, selectedIndex2));
-                        selectedIndex = 0;
-                        return true;
                     }
                 }
-                else if (c2 is Splitter)
-                {
-                    if (((Splitter)c2).Input == false)
-                    {
-                       
-                        ((Splitter) c2).InPut = c1;
-                        foreach (Component c in Components)
-                        {
-                            if (c == c1)
-                            {
-                                if (((Splitter)c).OutputUp == false)
-                                {
-                                    selectedIndex = 1;
-                                    ((Splitter)c).OutputUp = true;
-                                }
-                                else if (((Splitter)c).OutputDown == false)
-                                {
-                                    selectedIndex = 2;
-
-                                    ((Splitter)c).OutputDown = true;
-                                }
-                                
-
-                            }
-                            else if (c == c2)
-                            {
-                                if (((Splitter)c).Input == false)
-                                    ((Splitter)c).Input = true;
-
-                            }
-
-                        }
-                        Components.Add(new Pipeline(c1, c2, selectedIndex));
-                        selectedIndex = 0;
-                        return true;
-                    }
-                }
-                }
-
-            }
-            else if (c1 is Merger)
-            {
-                if (((Merger) c1).Output == false)
-                {
-
-                    if (c2 is Pump)
-                    {
-                        temp1 = c2;
-                        temp2 = c1;
-                        if (DrawPipeline(temp1, temp2))
-                            return true;
-                    }
-                    else if (c2 is Sink)
-                    {
-                        if (((Sink) c2).PipelineConnected == false)
-                        {
-                            foreach (Component c in Components)
-                            {
-                                if (c == c1)
-                                {
-                                    if (((Merger) c).Output == false)
-
-                                        ((Merger) c).Output = true;
-                                }
-                                else if (c == c2)
-                                {
-                                    if (((Sink) c).PipelineConnected == false)
-                                    {
-                                        selectedIndex = 0;
-                                        ((Sink) c).PipelineConnected = true;
-                                    }
-                                }
-                               
-                            }
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            selectedIndex = 0;
-                            return true;
-                        }
-                    }
-                    else if (c2 is Splitter)
-                    {
-                        if (((Splitter) c2).Input == false)
-                        {
-                            ((Splitter)c2).InPut = c1;
-                            foreach (Component c in Components)
-                            {
-                                if (c == c1)
-                                {
-                                    if (((Merger) c).Output == false)
-
-                                        ((Merger) c).Output = true;
-
-                                }
-                                else if (c == c2)
-                                {
-                                    if (((Splitter) c).Input == false)
-                                    {
-                                        selectedIndex = 0;
-                                        ((Splitter) c).Input = true;
-                                    }
-                                }
-                                
-                            }
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            selectedIndex = 0;
-                            return true;
-                        }
-                    }
-                    else if (c2 is Merger)
-                    {
-                        if (((Merger) c2).InputDown == false || ((Merger) c2).InputUp == false)
-                        {
-                            foreach (Component c in Components)
-                            {
-                                if (c == c1)
-                                {
-                                    if (((Merger) c).Output == false)
-
-                                        ((Merger) c).Output = true;
-
-                                }
-                                else if (c == c2)
-                                {
-                                    if (((Merger) c).InputUp == false)
-                                    {
-                                        selectedIndex = 1;
-                                        ((Merger) c).InputUp = true;
-                                    }
-                                    else if (((Merger) c).InputDown == false)
-                                    {
-                                        selectedIndex = 2;
-                                        ((Merger) c).InputDown = true;
-                                    }
-                                }
-
-                            }
-                            Components.Add(new Pipeline(c1, c2, selectedIndex));
-                            selectedIndex = 0;
-                            return true;
-                        }
-
-                    }
-                }
-            }
             }
             else
             {
@@ -835,6 +957,7 @@ namespace FlowSimulator
             }
             return false;
         }
+
 
         /// <summary>
         /// to give the coordinates of the line

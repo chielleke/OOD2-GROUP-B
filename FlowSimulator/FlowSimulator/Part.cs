@@ -19,6 +19,7 @@ namespace FlowSimulator
         /// </summary>
         /// <param name="_position">A point where it is stated</param>
         public Part(Point _position)  {
+            this.Capacity = 10;
             this.position = _position;
             Size s = new Size(40, 40);
             selectionArea = new Rectangle(this.Position, new Size(40, 40));

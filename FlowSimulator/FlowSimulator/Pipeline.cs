@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
+using System.Drawing; 
 
 namespace FlowSimulator
 {
@@ -15,42 +15,24 @@ namespace FlowSimulator
         /// </summary>
         public Component Input { get; set; }
 
-        public Pipeline(Component input, Component output, double flow)
+        public Pipeline(Component input, Component output, double CurrentFlow)
         {
             this.Input = input;
             this.Output = output;
-            this.CurrentFlow = Convert.ToInt32(input.CurrentFlow);
+            if (input.GetType() == typeof(Splitter))
+            {
+                if (input.OutPutUp != null && input.OutPutDown == null)
+                {
+                    this.CurrentFlow = input.OutPutUp.CurrentFlow;
+                }
+                else this.CurrentFlow = input.OutPutDown.CurrentFlow;
+            }
+            else
+            { this.CurrentFlow = Convert.ToDouble(input.CurrentFlow); }
 
         }
 
-        // returns the remaining capacity on a pipe
-        public double getCapacity(Component from, Component to)
-        {//forward flow
-            if (Input.Equals(from) && Output.Equals(to))
-                return Capacity - CurrentFlow;
-            //backwards flow
-            if (Input.Equals(to) && Output.Equals(from))
-                return CurrentFlow;
-
-            throw new ArgumentException("Both from " + from.GetType() + " and " + from.GetType() +
-                                        "should be a part of this pipeline");
-        }
-
-       
-        public int AdjustCapacity(Component from, Component to, int flow)
-        {
-            if (flow > getCapacity(from, to))
-                throw new ArgumentException("The flow: "+flow+"exceeds the limit");
-           // forward flow
-            if (Input.Equals(from) && Output.Equals(to))
-                this.CurrentFlow += flow;
-            // backwards flow
-            if (Input.Equals(to) && Output.Equals(from))
-                this.CurrentFlow -= flow;
-                
-            throw new ArgumentException("Both from: "+from.GetType()+" and "+to.GetType()+" should be a part of this pipeline");
-        }
-
+      
     /// <summary>
         /// The output component connected to the pipeline
         /// </summary>
@@ -61,12 +43,19 @@ namespace FlowSimulator
         }
 
         /// <summary>
-        /// Determines if the flow through the pipeline is critical
+        /// Determines if the CurrentFlow through the pipeline is critical
         /// </summary>
         public bool IsCritical
         {
-            get;
-            set;
+            get
+            {
+                if (CurrentFlow > Capacity)
+                    return true;
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         private Point _inputPoint;
@@ -79,9 +68,16 @@ namespace FlowSimulator
             this.Output = c2;
             _selectedOutput = selectedOutput;
             this.Capacity = 0;
-            this.CurrentFlow = Convert.ToInt32(c1.CurrentFlow);
-            //this.AssignInputPoint();
-           // this.AssignOutputPoint();
+            if (c1.GetType() == typeof(Splitter))
+            {
+                if (c1.OutPutUp != null && c1.OutPutDown == null)
+                {
+                    this.CurrentFlow = c1.OutPutUp.CurrentFlow;
+                }
+                else this.CurrentFlow = c1.OutPutDown.CurrentFlow;
+            }
+            else
+            { this.CurrentFlow = Convert.ToDouble(c1.CurrentFlow); }
         }
         public Pipeline(Component c1, Component c2, int selectedOutput, int selectedOutput2)
         {
@@ -90,7 +86,17 @@ namespace FlowSimulator
             _selectedOutput = selectedOutput;
             _selectedOutput2 = selectedOutput2;
             this.Capacity = 0;
-            this.CurrentFlow = Convert.ToInt32(c1.CurrentFlow);
+            if (c1.GetType() == typeof(Splitter))
+            {
+                if (c1.OutPutUp != null && c1.OutPutDown == null)
+                {
+                    this.CurrentFlow = c1.OutPutUp.CurrentFlow;
+                }
+                else this.CurrentFlow = c1.OutPutDown.CurrentFlow;
+            }
+            else
+            { this.CurrentFlow = Convert.ToDouble(c1.CurrentFlow); }
+            
           //  this.AssignInputPoint();
            // this.AssignOutputPoint();
         }

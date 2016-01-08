@@ -29,7 +29,7 @@ namespace FlowSimulator
         /// <summary>
         /// Determines the percentage through the first channel of the splitter
         /// </summary>
-        public int PercentageUp
+        public double PercentageUp
         {
             get
             {
@@ -43,7 +43,7 @@ namespace FlowSimulator
         /// <summary>
         /// The remainder from the PercentageUp
         /// </summary>
-        public int PercentageDown
+        public double PercentageDown
         {
             get
             {

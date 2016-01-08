@@ -18,7 +18,9 @@ namespace FlowSimulator
         public Component InPutDown { get; set; }
         public Component OutPutUp { get; set; }
         public Component OutPutDown { get; set; }
-
+        public Component OutPut { get; set; }
+        public double Capacity { get; set; }
+        public double CurrentFlow { get; set; }
 
         /// <summary>
         /// The current position of the component on the canvas
@@ -58,12 +60,12 @@ namespace FlowSimulator
         /// <summary>
         /// The maximum flow through the component
         /// </summary>
-        public int Capacity { get; set; }
+      
 
         /// <summary>
         /// The current flow through the component
         /// </summary>
-        public int CurrentFlow { get; set; }
+      
 
         
 

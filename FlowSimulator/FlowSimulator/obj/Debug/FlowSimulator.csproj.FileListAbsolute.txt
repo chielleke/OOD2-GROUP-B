@@ -60,3 +60,12 @@ D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.c
 D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.FlowNetworkSimulator.resources
 D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.Properties.Resources.resources
 D:\SCHOOL\OOD\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.csproj.GenerateResource.Cache
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\bin\Debug\FlowSimulator.exe.config
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.exe
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.pdb
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.csprojResolveAssemblyReference.cache
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.FlowNetworkSimulator.resources
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.Properties.Resources.resources
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\obj\Debug\FlowSimulator.csproj.GenerateResource.Cache
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\bin\Debug\FlowSimulator.exe
+C:\Users\Habon\Documents\GitHub\OOD2-GROUP-B\FlowSimulator\FlowSimulator\bin\Debug\FlowSimulator.pdb
