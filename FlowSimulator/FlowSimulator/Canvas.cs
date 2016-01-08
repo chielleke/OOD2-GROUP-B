@@ -16,10 +16,7 @@ namespace FlowSimulator
     public class Canvas
     {
         private bool IsOccupied;
-        /// <summary>
-        /// A list of all pipelines
-        /// </summary>
-        public List<Pipeline> Pipelines { get; set; }
+       
 
         /// <summary>
         /// This list will contain all the components that have been drawn on the canvas
@@ -325,11 +322,16 @@ namespace FlowSimulator
         /// <param name="c2"></param>
        public Pipeline SelectPipeline(Point p)
         {
-            foreach (Pipeline pipe in Pipelines)
+            Pipeline pipe;
+            foreach (Component comp in Components)
             {
-                if (DistanceFromPointToLine(p, pipe.inputPoint, pipe.outputPoint) < 4)
+                if (comp is Pipeline)
                 {
-                    return pipe;
+                    pipe = ((Pipeline)comp);
+                    if (DistanceFromPointToLine(p, pipe.inputPoint, pipe.outputPoint) < 4)
+                    {
+                        return pipe;
+                    }
                 }
             }
             return null;
@@ -367,7 +369,7 @@ namespace FlowSimulator
        public void DeletePipeline(Point p)
        {
            Pipeline tempPipe = null;
-           foreach (Pipeline pipe in Pipelines)
+           foreach (Pipeline pipe in Components)
            {
                if (DistanceFromPointToLine(p, pipe.inputPoint, pipe.outputPoint) < 4)
                {
@@ -437,28 +439,30 @@ namespace FlowSimulator
                    }
                }
            }
-           Pipelines.Remove(tempPipe);           //delete selected wire
+           Components.Remove(tempPipe);           //delete selected wire
        }
     
 
         public void DeleteComponent(Point mouseClicked)
        {
-           //Rectangle tempMousePoint = new Rectangle(mouseClicked, new Size(1, 1));
-           
+            //Rectangle tempMousePoint = new Rectangle(mouseClicked, new Size(1, 1));
 
-           // removes all pipelines connected
-           for (int i = 0; i < Pipelines.Count(); i++)
-           {
-               if (Pipelines[i].Output == SelectComponent(mouseClicked))  
+
+            // removes all Components connected
+            foreach (Pipeline pipe in Components)
+            {
+
+           
+               if (pipe.Output == SelectComponent(mouseClicked))  
                {
-                   DeletePipeline(Pipelines[i].outputPoint);
-                   i--;
+                   DeletePipeline(pipe.outputPoint);
+                   
                }
-               else if (Pipelines[i].Input == SelectComponent(mouseClicked)) 
+               else if (pipe.Input == SelectComponent(mouseClicked)) 
                {
-                   DeletePipeline(Pipelines[i].inputPoint);
+                   DeletePipeline(pipe.inputPoint);
                   
-                   i--;
+                   
                }
            }
            Components.Remove(SelectComponent(mouseClicked)); 
@@ -493,7 +497,7 @@ namespace FlowSimulator
                                 }
 
                             }
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             return true;
                             selectedIndex = 0;
                         }
@@ -517,7 +521,7 @@ namespace FlowSimulator
                                 }
 
                             }
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             selectedIndex = 0;
                             return true;
                         }
@@ -555,7 +559,7 @@ namespace FlowSimulator
                                 }
 
                             }
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             selectedIndex = 0;
                             return true;
                         }
@@ -625,7 +629,7 @@ namespace FlowSimulator
                         }
                         if (!alreadyConnected)
                         {
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             selectedIndex = 0;
                             return true;
 
@@ -675,7 +679,7 @@ namespace FlowSimulator
                             }
 
                         }
-                        Pipelines.Add(new Pipeline(c1, c2, selectedIndex, selectedIndex2));
+                        Components.Add(new Pipeline(c1, c2, selectedIndex, selectedIndex2));
                         selectedIndex = 0;
                         return true;
                     }
@@ -712,7 +716,7 @@ namespace FlowSimulator
                             }
 
                         }
-                        Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                        Components.Add(new Pipeline(c1, c2, selectedIndex));
                         selectedIndex = 0;
                         return true;
                     }
@@ -754,7 +758,7 @@ namespace FlowSimulator
                                 }
                                
                             }
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             selectedIndex = 0;
                             return true;
                         }
@@ -783,7 +787,7 @@ namespace FlowSimulator
                                 }
                                 
                             }
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             selectedIndex = 0;
                             return true;
                         }
@@ -816,7 +820,7 @@ namespace FlowSimulator
                                 }
 
                             }
-                            Pipelines.Add(new Pipeline(c1, c2, selectedIndex));
+                            Components.Add(new Pipeline(c1, c2, selectedIndex));
                             selectedIndex = 0;
                             return true;
                         }
@@ -852,7 +856,7 @@ namespace FlowSimulator
         {
 
             Components = new List<Component>();
-            Pipelines = new List<Pipeline>();
+            
 
         }
 

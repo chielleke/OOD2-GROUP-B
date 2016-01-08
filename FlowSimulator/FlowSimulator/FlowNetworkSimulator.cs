@@ -327,9 +327,9 @@ namespace FlowSimulator
                     Rectangle rec = canvas.SelectComponent(mousepoint).SelectionArea;
                     gr.DrawRectangle(pen, rec);
                 }
-                if(canvas.Pipelines !=  null)
+                if(HasPipes())
                 {
-                    foreach (Pipeline p in canvas.Pipelines)
+                    foreach (Pipeline p in canvas.Components)
                     {
                         Pen pen1 = new Pen(Color.DeepSkyBlue, 5);
                         gr.DrawLine(pen1, p.inputPoint, p.outputPoint);
@@ -359,7 +359,14 @@ namespace FlowSimulator
         {
             selectedComponent = new Merger(new Point(0, 0));
         }
-
+        private bool HasPipes()
+        {
+            foreach (Pipeline Pipe in canvas.Components)
+            {
+                return true;
+            }
+            return false;
+        }
         private void UndoButton_Click(object sender, EventArgs e)
         {
             canvas.UndoLastAction();
