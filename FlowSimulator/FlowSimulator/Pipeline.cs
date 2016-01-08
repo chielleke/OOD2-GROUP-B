@@ -15,7 +15,7 @@ namespace FlowSimulator
         /// </summary>
         public Component Input { get; set; }
 
-        public Pipeline(Component input, Component output, double CurrentFlow)
+        public Pipeline(Component input, Component output)
         {
             this.Input = input;
             this.Output = output;

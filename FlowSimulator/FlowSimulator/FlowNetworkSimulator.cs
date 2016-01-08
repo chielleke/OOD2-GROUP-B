@@ -154,6 +154,12 @@ namespace FlowSimulator
                 if ((tempComponent = canvas.SelectComponent(mousepoint)) != null)
                 {
                     isSelected = true;
+                    if (tempComponent.GetType() == typeof(Splitter))
+                        trackBar1.Enabled = true;
+                    else
+                    {
+                        trackBar1.Enabled = false;
+                    }
                     this.Refresh();
 
 
@@ -441,15 +447,6 @@ namespace FlowSimulator
                 }
             }
 
-            if ((p = canvas.SelectPipeline(mousepoint)) != null)
-            {
-                if (textBox2.Text != "")
-                {
-                    p.Capacity = Convert.ToInt32(textBox1.Text);
-                    flowLabel.Text = p.Capacity + "(" + p.CurrentFlow + ")";
-
-                }
-            }
             this.Refresh();
 
         }
@@ -471,14 +468,6 @@ namespace FlowSimulator
                 }
             }
 
-            if ((p = canvas.SelectPipeline(mousepoint)) != null)
-            {
-                if (textBox1.Text != "")
-                {
-                    p.CurrentFlow = Convert.ToDouble(textBox1.Text);
-                    flowLabel.Text = p.Capacity + "(" + p.CurrentFlow + ")";
-                }
-            }
             this.Refresh();
         }
 
@@ -495,9 +484,13 @@ namespace FlowSimulator
 
                 ((Splitter)selectedComponent).PercentageUp = percentage / 10;
                 ((Splitter)selectedComponent).PercentageDown = remainingpercentage / 10;
+                canvas.UpdateProperties(selectedComponent);
+                
 
 
             }
+            this.Refresh();
+            
         }
             
         private int maxFlow, currentFlow;
