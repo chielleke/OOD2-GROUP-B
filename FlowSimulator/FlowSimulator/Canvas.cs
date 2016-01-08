@@ -16,7 +16,7 @@ namespace FlowSimulator
     public class Canvas
     {
         private bool IsOccupied;
-       
+
 
         /// <summary>
         /// This list will contain all the components that have been drawn on the canvas
@@ -85,7 +85,7 @@ namespace FlowSimulator
         /// this int is used for knowing where canvas is at while using the Undo-Redo List
         /// </summary>
         public int UndoRedoIndex = -1;
-        
+
 
         /// <summary>
         /// Responsible for saving a canvas and loading existing canvas
@@ -180,9 +180,9 @@ namespace FlowSimulator
             return false;
         }
 
-        public Point  getMidPoint(Pipeline p)
+        public Point getMidPoint(Pipeline p)
         {
-            return new Point((p.inputPoint.X + p.outputPoint.X)/2, (p.inputPoint.Y + p.outputPoint.Y)/2);
+            return new Point((p.inputPoint.X + p.outputPoint.X) / 2, (p.inputPoint.Y + p.outputPoint.Y) / 2);
         }
 
 
@@ -211,13 +211,13 @@ namespace FlowSimulator
         /// <returns></returns>
         /// 
         private Pipeline p;
-      
-    
+
+
         /// <summary>
         /// To calculate the maximum flow through the network
         /// </summary>
         /// <returns></returns>
-        
+
 
         /// <summary>
         /// To draw a created component
@@ -293,8 +293,8 @@ namespace FlowSimulator
         {
             UndoRedoList.Add(new Action(ActType, comp));
             UndoRedoIndex++;
-            if (UndoRedoIndex +1 <UndoRedoList.Count)
-                { UndoRedoList.RemoveAt(UndoRedoIndex + 1); }
+            if (UndoRedoIndex + 1 < UndoRedoList.Count)
+            { UndoRedoList.RemoveAt(UndoRedoIndex + 1); }
 
         }
 
@@ -313,7 +313,7 @@ namespace FlowSimulator
         /// </summary>
         /// <param name="c1"></param>
         /// <param name="c2"></param>
-       public Pipeline SelectPipeline(Point p)
+        public Pipeline SelectPipeline(Point p)
         {
             Pipeline pipe;
             foreach (Component comp in Components)
@@ -329,137 +329,158 @@ namespace FlowSimulator
             }
             return null;
         }
-       public static double DistanceFromPointToLine(Point pt, Point p1, Point p2)
-       {
-           PointF closest;
-           float dx = p2.X - p1.X;
-           float dy = p2.Y - p1.Y;
+        public static double DistanceFromPointToLine(Point pt, Point p1, Point p2)
+        {
+            PointF closest;
+            float dx = p2.X - p1.X;
+            float dy = p2.Y - p1.Y;
 
-           // Calculate the t that minimizes the distance.
-           float t = ((pt.X - p1.X) * dx + (pt.Y - p1.Y) * dy) / (dx * dx + dy * dy);
+            // Calculate the t that minimizes the distance.
+            float t = ((pt.X - p1.X) * dx + (pt.Y - p1.Y) * dy) / (dx * dx + dy * dy);
 
-           // See if this represents one of the segment's
-           // end points or a point in the middle.
-           if (t < 0)
-           {
-               dx = pt.X - p1.X;
-               dy = pt.Y - p1.Y;
-           }
-           else if (t > 1)
-           {
-               dx = pt.X - p2.X;
-               dy = pt.Y - p2.Y;
-           }
-           else
-           {
-               closest = new PointF(p1.X + t * dx, p1.Y + t * dy);
-               dx = pt.X - closest.X;
-               dy = pt.Y - closest.Y;
-           }
-           return Math.Sqrt(dx * dx + dy * dy);
-       }
+            // See if this represents one of the segment's
+            // end points or a point in the middle.
+            if (t < 0)
+            {
+                dx = pt.X - p1.X;
+                dy = pt.Y - p1.Y;
+            }
+            else if (t > 1)
+            {
+                dx = pt.X - p2.X;
+                dy = pt.Y - p2.Y;
+            }
+            else
+            {
+                closest = new PointF(p1.X + t * dx, p1.Y + t * dy);
+                dx = pt.X - closest.X;
+                dy = pt.Y - closest.Y;
+            }
+            return Math.Sqrt(dx * dx + dy * dy);
+        }
+        /// <summary>
+        /// A simple method that checkes wich Component you are looking for and returns the one you are looking for
+        /// </summary>
+        /// <param name="p">the coordinates</param>
+        /// <returns></returns>
+        public Component GetComponent(Point p)
+        {
+            
+            foreach (Component comp in Components)
+            {
+                if (comp.Position == p)
+                {
+                    return comp;
+                }
+               
+            }
+            return null;
 
-       public void DeletePipeline(Point p)
-       {
-           Pipeline tempPipe = null;
-           foreach (Pipeline pipe in Components)
-           {
-               if (DistanceFromPointToLine(p, pipe.inputPoint, pipe.outputPoint) < 4)
-               {
-                   tempPipe = pipe;
-                   break;
-               }
-           }
-           foreach (Component c in Components)
-           {
-               // delete connections
-               if(tempPipe.Input ==c )
-               {
-                   if(c is Pump)
-                   {
-                       ((Pump)c).PipelineConnected = false;
-                       break;
-                   }
-                   else if(c is Splitter)
-                   {
-                       if(tempPipe._selectedOutput == 1)
-                       {
-                           ((Splitter)c).OutputUp = false;
-                       }
-                       else if(tempPipe._selectedOutput == 1)
-                       {
-                           ((Splitter)c).OutputDown = false;
-                       }
-                       break;
-                   }
-                   else if(c is Merger)
-                   {
-                       ((Merger)c).Output = false;
-                       break;
-                   }
-                   
-               }
-           }
 
-           foreach (Component c in Components)
-           {
-               // delete connections
-               if (tempPipe.Output == c)
-               {
-                   if (c is Splitter)
-                   {
-                       
-                           ((Splitter)c).Input = false;
-                       
-                       break;
-                   }
-                   else if (c is Merger)
-                   {
-                       if (tempPipe._selectedOutput == 1)
-                       {
-                           ((Merger)c).InputUp = false;
-                       }
-                       else if (tempPipe._selectedOutput == 1)
-                       {
-                           ((Merger)c).InputDown = false;
-                       }
-                       break;
-                   }
-                   else
-                   {
-                       ((Sink)c).PipelineConnected = false;
-                       break;
-                   }
-               }
-           }
-           Components.Remove(tempPipe);           //delete selected wire
-       }
-    
+        }
+
+
+        public void DeletePipeline(Point p)
+        {
+            Pipeline tempPipe = null;
+            foreach (Pipeline pipe in Components)
+            {
+                if (DistanceFromPointToLine(p, pipe.inputPoint, pipe.outputPoint) < 4)
+                {
+                    tempPipe = pipe;
+                    break;
+                }
+            }
+            foreach (Component c in Components)
+            {
+                // delete connections
+                if (tempPipe.Input == c)
+                {
+                    if (c is Pump)
+                    {
+                        ((Pump)c).PipelineConnected = false;
+                        break;
+                    }
+                    else if (c is Splitter)
+                    {
+                        if (tempPipe._selectedOutput == 1)
+                        {
+                            ((Splitter)c).OutputUp = false;
+                        }
+                        else if (tempPipe._selectedOutput == 1)
+                        {
+                            ((Splitter)c).OutputDown = false;
+                        }
+                        break;
+                    }
+                    else if (c is Merger)
+                    {
+                        ((Merger)c).Output = false;
+                        break;
+                    }
+
+                }
+            }
+
+            foreach (Component c in Components)
+            {
+                // delete connections
+                if (tempPipe.Output == c)
+                {
+                    if (c is Splitter)
+                    {
+
+                        ((Splitter)c).Input = false;
+
+                        break;
+                    }
+                    else if (c is Merger)
+                    {
+                        if (tempPipe._selectedOutput == 1)
+                        {
+                            ((Merger)c).InputUp = false;
+                        }
+                        else if (tempPipe._selectedOutput == 1)
+                        {
+                            ((Merger)c).InputDown = false;
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        ((Sink)c).PipelineConnected = false;
+                        break;
+                    }
+                }
+            }
+            Components.Remove(tempPipe);           //delete selected wire
+        }
+
 
         public void DeleteComponent(Point mouseClicked)
-       {
+        {
             //Rectangle tempMousePoint = new Rectangle(mouseClicked, new Size(1, 1));
 
 
             // removes all Components connected
-            foreach (Pipeline pipe in Components)
+            foreach (Pipeline pipe in Components.Cast<Pipeline>())
             {
 
-           
-               if (pipe.Output == SelectComponent(mouseClicked))  
-               {
-                   DeletePipeline(pipe.outputPoint);
-                   
-               }
-               else if (pipe.Input == SelectComponent(mouseClicked)) 
-               {
-                   DeletePipeline(pipe.inputPoint);
-                  
-                   
-               }
-           }
-           Components.Remove(SelectComponent(mouseClicked)); 
-       }
+
+                if (pipe.Output == SelectComponent(mouseClicked))
+                {
+                    DeletePipeline(pipe.outputPoint);
+
+                }
+                else if (pipe.Input == SelectComponent(mouseClicked))
+                {
+                    DeletePipeline(pipe.inputPoint);
+
+
+                }
+            }
+            Components.Remove(SelectComponent(mouseClicked));
+        }
         public Pipeline findSplitterPipeline(Component input)
         {
             Pipeline pipeline = null;
@@ -484,12 +505,12 @@ namespace FlowSimulator
         public void UpdateProperties(Component updatedComponent)
         {
             Component temp = null;
-           Pipeline pipeline = null;
+            Pipeline pipeline = null;
             foreach (Component comp in Components)
             {
                 if (comp is Pipeline)
                 {
-                    pipeline = ((Pipeline) comp);
+                    pipeline = ((Pipeline)comp);
                 }
                 if (pipeline != null)
                 {
@@ -501,21 +522,21 @@ namespace FlowSimulator
                             pipeline.CurrentFlow = pipeline.Output.CurrentFlow;
 
                         }
-                        if (pipeline.CurrentFlow != pipeline.Input.CurrentFlow && pipeline.Input.GetType() == typeof (Pump))
+                        if (pipeline.CurrentFlow != pipeline.Input.CurrentFlow && pipeline.Input.GetType() == typeof(Pump))
                         {
                             pipeline.CurrentFlow = pipeline.Input.CurrentFlow;
                             pipeline.Output.CurrentFlow = pipeline.CurrentFlow;
                         }
 
 
-                        if (pipeline.Output.GetType() == typeof (Splitter))
+                        if (pipeline.Output.GetType() == typeof(Splitter))
                         {
                             if (pipeline.Output.OutPutUp != null)
                             {
 
                                 p = findSplitterPipeline(pipeline.Output.OutPutUp);
-                                p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
-                                                    ((Splitter) pipeline.Output).PercentageUp, 2);
+                                p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow *
+                                                    ((Splitter)pipeline.Output).PercentageUp, 2);
 
 
                             }
@@ -523,8 +544,8 @@ namespace FlowSimulator
                             {
 
                                 p = findSplitterPipeline(pipeline.Output.OutPutDown);
-                                p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
-                                                    ((Splitter) pipeline.Output).PercentageDown, 2);
+                                p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow *
+                                                    ((Splitter)pipeline.Output).PercentageDown, 2);
 
                             }
 
@@ -984,7 +1005,7 @@ namespace FlowSimulator
         {
 
             Components = new List<Component>();
-            
+
 
         }
 
