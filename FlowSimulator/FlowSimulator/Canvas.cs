@@ -462,72 +462,87 @@ namespace FlowSimulator
        }
         public Pipeline findSplitterPipeline(Component input)
         {
-            Pipeline temp = null;
-            foreach (Pipeline pipeline in Components)
+            Pipeline pipeline = null;
+            foreach (Component comp in Components)
             {
-                if (pipeline.Input == input)
-                    return SelectPipeline(new Point(input.Position.X + 40, input.Position.Y + 10));
-                // temp = pipeline;
+                if (comp is Pipeline)
+                {
+                    pipeline = ((Pipeline)comp);
+
+                    if (pipeline != null)
+                    {
+                        if (pipeline.Input == input)
+                            return SelectPipeline(new Point(input.Position.X + 40, input.Position.Y + 10));
+                        // temp = pipeline;
+                    }
+                }
             }
-            return temp;
+            return pipeline;
         }
         public void UpdateProperties(Component updatedComponent)
         {
             Component temp = null;
-           // Pipeline pipeline = null;
-            foreach (Pipeline pipeline in Components)
+           Pipeline pipeline = null;
+            foreach (Component comp in Components)
             {
-                
-                  //  pipeline = ((Pipeline)pipe);
-                if (pipeline.Input == updatedComponent)
+                if (comp is Pipeline)
                 {
-
-                    pipeline.Output.CurrentFlow += (updatedComponent.CurrentFlow - pipeline.CurrentFlow);
-                    pipeline.CurrentFlow = updatedComponent.CurrentFlow;
-
-
-                    if (pipeline.Output.GetType() == typeof (Splitter))
+                    pipeline = ((Pipeline) comp);
+                }
+                if (pipeline != null)
+                {
+                    if (pipeline.Input == updatedComponent)
                     {
-                        if (pipeline.Output.OutPutUp != null)
+
+                        pipeline.Output.CurrentFlow += (updatedComponent.CurrentFlow - pipeline.CurrentFlow);
+                        pipeline.CurrentFlow = updatedComponent.CurrentFlow;
+
+
+                        if (pipeline.Output.GetType() == typeof (Splitter))
                         {
+                            if (pipeline.Output.OutPutUp != null)
+                            {
 
-                            p = findSplitterPipeline(pipeline.Output.OutPutUp);
-                            p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
-                                                       ((Splitter) pipeline.Output).PercentageUp, 2);
-                            pipeline.Output.OutPutUp.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
-                                                                              ((Splitter) pipeline.Output).PercentageUp,
-                                2);
+                                p = findSplitterPipeline(pipeline.Output.OutPutUp);
+                                p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                           ((Splitter) pipeline.Output).PercentageUp, 2);
+                                pipeline.Output.OutPutUp.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                                                  ((Splitter) pipeline.Output)
+                                                                                      .PercentageUp,
+                                    2);
 
+                                temp = pipeline.Output.OutPutUp;
+                                UpdateProperties(temp);
+                            }
+                            if (pipeline.Output.OutPutDown != null)
+                            {
+
+                                p = findSplitterPipeline(pipeline.Output.OutPutDown);
+                                p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                           ((Splitter) pipeline.Output).PercentageDown, 2);
+                                pipeline.Output.OutPutDown.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
+                                                                                    ((Splitter) pipeline.Output)
+                                                                                        .PercentageDown, 2);
+
+                            }
+                            temp = pipeline.Output;
 
                         }
-                        if (pipeline.Output.OutPutDown != null)
-                        {
-
-                            p = findSplitterPipeline(pipeline.Output.OutPutDown);
-                            p.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
-                                                       ((Splitter) pipeline.Output).PercentageDown, 2);
-                            pipeline.Output.OutPutDown.CurrentFlow = Math.Round(pipeline.Output.CurrentFlow*
-                                                                                ((Splitter) pipeline.Output)
-                                                                                    .PercentageDown, 2);
-
-                        }
-                        temp = pipeline.Output;
-
+                        break;
                     }
-                    break;
+
+                    else
+                    {
+                        temp = pipeline.Output;
+                        break;
+                    }
                 }
-                  
-                else
+                if (temp != null)
                 {
-                    temp = pipeline.Output;
-                    break;
+                    UpdateProperties(temp);
+
+
                 }
-            }
-            if (temp != null)
-            {
-                UpdateProperties(temp);
-
-
             }
 
         }

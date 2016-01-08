@@ -29,30 +29,12 @@ namespace FlowSimulator
         /// <summary>
         /// Determines the percentage through the first channel of the splitter
         /// </summary>
-        public double PercentageUp
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public double PercentageUp { get; set; }
 
         /// <summary>
         /// The remainder from the PercentageUp
         /// </summary>
-        public double PercentageDown
-        {
-            get
-            {
-                throw new System.NotImplementedException();
-            }
-            set
-            {
-            }
-        }
+        public double PercentageDown { get; set; }
 
         /// <summary>
         /// returns a number of connected nodes
@@ -76,6 +58,8 @@ namespace FlowSimulator
 
         public Splitter(Point position): base(position)
         {
+            this.PercentageUp = .5;
+            this.PercentageDown = .5;
             
            this.compImage = new Bitmap(Properties.Resources.splitter);
            this.compImageNot = new Bitmap(Properties.Resources.splitterNot);
