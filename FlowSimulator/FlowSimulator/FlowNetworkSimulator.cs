@@ -160,6 +160,13 @@ namespace FlowSimulator
                     {
                         trackBar1.Enabled = false;
                     }
+                    if (tempComponent.GetType() == typeof(Pump))
+                        textBox1.Enabled = true;
+                    else
+                    {
+                        textBox1.Enabled = false;
+                    }
+                    
                     this.Refresh();
 
 
