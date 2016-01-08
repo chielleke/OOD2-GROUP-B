@@ -166,6 +166,8 @@ namespace FlowSimulator
                     {
                         textBox1.Enabled = false;
                     }
+
+                    
                     
                     this.Refresh();
 
@@ -329,16 +331,25 @@ namespace FlowSimulator
                 {
                     foreach (Component comp in canvas.Components)
                     {
-                        if(comp is Part)
-                        gr.DrawImage(((Part)comp).ComponentImage(true), comp.Position);
+                        if (comp is Part)
+                            gr.DrawImage(((Part) comp).ComponentImage(true), comp.Position);
                         else
                         {
                             p = (Pipeline) comp;
-                            Pen pen1 = new Pen(Color.DeepSkyBlue, 5);
-                            gr.DrawLine(pen1, p.inputPoint, p.outputPoint);
+                            if (p.IsCritical)
+                            {
+                                Pen pen1 = new Pen(Color.Red, 5);
+                                gr.DrawLine(pen1, p.inputPoint, p.outputPoint);
+                            }
+                            else
+                            {
+
+                                Pen pen1 = new Pen(Color.DeepSkyBlue, 5);
+                                gr.DrawLine(pen1, p.inputPoint, p.outputPoint);
+                            }
                         }
                     }
-                   
+
                 }
                 if (isSelected)
                 {
@@ -437,7 +448,6 @@ namespace FlowSimulator
         Pipeline p;
         private void textBox2_TextChanged(object sender, EventArgs e) // capacity
         {
-
             if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null)
             {
                 if (textBox2.Text != "")
@@ -453,6 +463,7 @@ namespace FlowSimulator
 
                 }
             }
+            selectedComponent = null;
 
             this.Refresh();
 
@@ -461,7 +472,7 @@ namespace FlowSimulator
         private void textBox1_TextChanged(object sender, EventArgs e)//  flow
         {
             Component temp;
-
+           
             if ((temp = canvas.SelectComponent(mousepoint)) != null)
             {
                 if (textBox1.Text != "")
@@ -474,6 +485,7 @@ namespace FlowSimulator
                     canvas.UpdateProperties(temp);
                 }
             }
+            selectedComponent = null;
 
             this.Refresh();
         }
@@ -483,6 +495,7 @@ namespace FlowSimulator
         private double percentage, remainingpercentage;
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
+           
             if ((selectedComponent = canvas.SelectComponent(mousepoint)) != null && selectedComponent.GetType() == typeof(Splitter))
             {
                 percentage = trackBar1.Value;
@@ -496,6 +509,7 @@ namespace FlowSimulator
 
 
             }
+            selectedComponent = null;
             this.Refresh();
             
         }
